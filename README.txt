@@ -1,21 +1,20 @@
-CAISSEKOM SMARTPRICE v0.2
+CAISSEKOM SMARTPRICE v0.3
+========================
 
-Fonctions :
-- Recherche par code-barres, code interne ou désignation
-- Scan caméra sur navigateur compatible et adresse HTTPS
-- Import direct Excel XLSX/XLS et CSV avec aperçu
-- Ajout, modification et suppression d'articles
-- Paramètres du magasin
-- Génération et téléchargement du QR Code
-- Migration automatique des données locales de la version 0.1
+Nouveautés :
+- Nouveau design client responsive
+- Scanner caméra plein écran avec changement de caméra et flash si compatible
+- Recherche instantanée
+- Résultat produit modernisé
+- Tableau de bord administrateur
+- Personnalisation du magasin : logo, couleurs, coordonnées, horaires, réseaux sociaux
+- Aperçu mobile en temps réel
+- Import Excel avec détection de doublons et aperçu
+- Historique des imports
+- Migration automatique des données v0.1/v0.2
 
-TEST LOCAL
-1. Ouvrir un terminal dans ce dossier.
-2. Exécuter : python -m http.server 8080
-3. Ouvrir : http://localhost:8080
-4. Administration : http://localhost:8080/admin.html
+IMPORTANT :
+Cette version reste un prototype statique. Les articles et paramètres sont stockés dans le navigateur (localStorage). Ils ne sont pas encore partagés automatiquement entre plusieurs appareils. La base centrale et les comptes sécurisés seront ajoutés dans une version ultérieure.
 
-IMPORTANT
-- La caméra fonctionne correctement sur HTTPS, par exemple après déploiement sur Vercel.
-- Les données de cette version sont stockées dans le navigateur. Une vraie base de données et une connexion sécurisée seront ajoutées dans une prochaine étape.
-- L'import Excel et la génération QR utilisent des bibliothèques chargées en ligne.
+Déploiement :
+Copier le contenu de ce dossier dans le dépôt GitHub caissekom-smartprice, puis Commit et Push origin. Vercel redéploiera automatiquement.

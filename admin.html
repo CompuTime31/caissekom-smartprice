@@ -2,86 +2,77 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Administration — SmartPrice</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b57d0">
+  <title>Administration — Caissekom SmartPrice</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
-<header class="topbar">
-  <div class="brand-mark">C</div>
-  <div><h1>Administration</h1><p>Caissekom SmartPrice v0.2</p></div>
-  <a class="admin-link" href="index.html">Voir l’espace client</a>
-</header>
+<body class="admin-page">
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v0.3</small></div></div>
+      <nav>
+        <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
+        <button class="nav-tab" data-tab="articles">▤ Articles</button>
+        <button class="nav-tab" data-tab="import">⇧ Import Excel</button>
+        <button class="nav-tab" data-tab="store">⌂ Magasin</button>
+        <button class="nav-tab" data-tab="qrcode">▣ QR Code</button>
+        <button class="nav-tab" data-tab="history">◷ Historique</button>
+      </nav>
+      <a class="btn btn-soft sidebar-preview" href="index.html">↗ Voir l’espace client</a>
+    </aside>
 
-<main class="container admin-container">
-  <section class="kpi-grid">
-    <article class="kpi"><span>Articles</span><strong id="articleCount">0</strong></article>
-    <article class="kpi"><span>Dernier import</span><strong id="lastImport">Jamais</strong></article>
-    <article class="kpi"><span>État</span><strong class="ok">Prêt</strong></article>
-  </section>
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div><span class="eyebrow">CAISSEKOM SMARTPRICE</span><h1 id="pageTitle">Tableau de bord</h1></div>
+        <div class="status-chip"><span></span> Données locales actives</div>
+      </header>
 
-  <nav class="tabs" aria-label="Administration">
-    <button class="tab active" data-tab="articles">Articles</button>
-    <button class="tab" data-tab="import">Importer Excel</button>
-    <button class="tab" data-tab="store">Magasin</button>
-    <button class="tab" data-tab="qr">QR Code</button>
-  </nav>
+      <main class="admin-content">
+        <section class="admin-panel active" id="panel-dashboard">
+          <div class="kpi-grid">
+            <article class="kpi-card"><span>Articles</span><strong id="articleCount">0</strong><small>dans le catalogue</small></article>
+            <article class="kpi-card"><span>Dernier import</span><strong id="lastImport">Jamais</strong><small id="lastImportRows">Aucune donnée</small></article>
+            <article class="kpi-card"><span>Dernière mise à jour</span><strong id="lastChange">—</strong><small>modification locale</small></article>
+            <article class="kpi-card"><span>Magasin</span><strong id="dashboardStore">CompuTime</strong><small>configuration active</small></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="card"><div class="card-heading"><div><span class="eyebrow">ACCÈS RAPIDE</span><h2>Actions principales</h2></div></div><div class="quick-actions"><button class="quick-action" data-go="import">⇧<span><strong>Importer un Excel</strong><small>Mettre à jour les prix</small></span></button><button class="quick-action" data-go="articles">＋<span><strong>Ajouter un article</strong><small>Gestion manuelle</small></span></button><button class="quick-action" data-go="qrcode">▣<span><strong>Générer le QR</strong><small>Accès client</small></span></button><button class="quick-action" data-go="store">⌂<span><strong>Configurer le magasin</strong><small>Logo et coordonnées</small></span></button></div></article>
+            <article class="card"><div class="card-heading"><div><span class="eyebrow">ÉTAT DU SYSTÈME</span><h2>Contrôle rapide</h2></div></div><div class="health-list"><div><span class="health-ok">✓</span><p><strong>Catalogue chargé</strong><small id="healthCatalog">0 article</small></p></div><div><span class="health-ok">✓</span><p><strong>Recherche client</strong><small>Disponible</small></p></div><div><span class="health-ok">✓</span><p><strong>Import Excel</strong><small>Prêt</small></p></div><div><span class="health-warning">!</span><p><strong>Stockage</strong><small>Local au navigateur — prototype</small></p></div></div></article>
+          </div>
+        </section>
 
-  <section id="panel-articles" class="panel active">
-    <div class="section-head"><div><h2>Gestion des articles</h2><p class="muted">Cliquez sur une ligne pour modifier l’article.</p></div>
-      <div class="admin-actions"><button id="exportBtn" class="secondary">Exporter JSON</button><button id="resetBtn" class="danger-soft">Réinitialiser</button></div>
+        <section class="admin-panel" id="panel-articles">
+          <div class="two-column-layout">
+            <article class="card sticky-form"><div class="card-heading"><div><span class="eyebrow">FICHE ARTICLE</span><h2>Ajouter ou modifier</h2></div></div><form id="articleForm" class="form-grid"><label>Code-barres / code interne<input id="code" required autocomplete="off"></label><label>Désignation<input id="designation" required autocomplete="off"></label><label>Prix de vente (DA)<input id="prix" type="number" min="0" step="0.01" required></label><div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer</button><button class="btn btn-soft" id="clearArticleBtn" type="button">Nouveau</button></div></form></article>
+            <article class="card"><div class="card-heading toolbar-heading"><div><span class="eyebrow">CATALOGUE</span><h2>Liste des articles</h2></div><div class="toolbar"><input id="tableSearch" type="search" placeholder="Rechercher…"><button class="btn btn-soft" id="exportBtn" type="button">Exporter JSON</button></div></div><div class="table-wrap"><table><thead><tr><th>Code</th><th>Désignation</th><th>Prix</th><th></th></tr></thead><tbody id="articleRows"></tbody></table></div><div class="table-footer"><span id="tableCount">0 article</span><button class="text-danger" id="resetBtn" type="button">Réinitialiser les données de démonstration</button></div></article>
+          </div>
+        </section>
+
+        <section class="admin-panel" id="panel-import">
+          <article class="card import-card"><div class="card-heading"><div><span class="eyebrow">IMPORTATION INTELLIGENTE</span><h2>Mettre à jour avec Excel</h2><p>Formats acceptés : .xlsx, .xls et .csv. Les codes sont conservés comme texte.</p></div></div><label class="drop-zone" for="excelInput"><span class="drop-icon">⇧</span><strong>Sélectionner votre fichier Excel</strong><small>Colonnes attendues : code-barres, désignation, prix</small><input id="excelInput" type="file" accept=".xlsx,.xls,.csv" hidden></label><div id="importMessage" class="notice" hidden></div></article>
+          <article id="previewBox" class="card" hidden><div class="card-heading toolbar-heading"><div><span class="eyebrow">APERÇU AVANT VALIDATION</span><h2>Contrôle des lignes</h2><p id="previewStats"></p></div><button id="confirmImportBtn" class="btn btn-primary" type="button">Valider l’import</button></div><div class="table-wrap"><table><thead><tr><th>Statut</th><th>Code</th><th>Désignation</th><th>Prix</th></tr></thead><tbody id="previewRows"></tbody></table></div></article>
+        </section>
+
+        <section class="admin-panel" id="panel-store">
+          <div class="two-column-layout store-layout">
+            <article class="card"><div class="card-heading"><div><span class="eyebrow">IDENTITÉ</span><h2>Informations du magasin</h2></div></div><form id="storeForm" class="form-grid"><label>Nom du magasin<input id="settingName" required></label><label>Adresse<input id="settingAddress"></label><div class="form-row"><label>Téléphone<input id="settingPhone"></label><label>Email<input id="settingEmail" type="email"></label></div><div class="form-row"><label>Horaires<input id="settingHours" placeholder="Sam–Jeu : 09h–18h"></label><label>Lien Google Maps<input id="settingMaps" type="url"></label></div><label>Message d’accueil<textarea id="settingWelcome" rows="3"></textarea></label><div class="form-row"><label>Facebook<input id="settingFacebook" type="url"></label><label>Instagram<input id="settingInstagram" type="url"></label></div><label>Site web<input id="settingWebsite" type="url"></label><div class="form-row"><label>Couleur principale<input id="settingPrimary" type="color" value="#0b57d0"></label><label>Couleur secondaire<input id="settingSecondary" type="color" value="#4f8cff"></label></div><label>Logo du magasin<input id="settingLogo" type="file" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG ou WebP. Stocké localement dans ce prototype.</small></label><div id="logoPreview" class="logo-preview"></div><div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer les paramètres</button><button class="btn btn-soft" id="removeLogoBtn" type="button">Retirer le logo</button></div></form></article>
+            <article class="phone-preview-card"><div class="phone-frame"><div class="phone-notch"></div><div class="phone-content"><div class="preview-brand"><div id="previewLogo" class="preview-logo">C</div><div><small>SmartPrice</small><strong id="previewName">CompuTime Oran</strong></div></div><div class="preview-hero"><span>VÉRIFICATEUR DE PRIX</span><h3>Scannez. Vérifiez. Achetez.</h3><p id="previewWelcome">Scannez un article pour afficher son prix.</p><button>Scanner un article</button></div></div></div></article>
+          </div>
+        </section>
+
+        <section class="admin-panel" id="panel-qrcode">
+          <div class="qr-layout"><article class="card"><div class="card-heading"><div><span class="eyebrow">QR CODE MAGASIN</span><h2>Créer le point d’accès client</h2><p>Utilisez l’adresse HTTPS de votre site Vercel.</p></div></div><label>Adresse de l’espace client<input id="qrUrl" type="url"></label><div class="form-actions"><button id="generateQrBtn" class="btn btn-primary" type="button">Générer le QR Code</button><button id="downloadQrBtn" class="btn btn-soft" type="button" hidden>Télécharger PNG</button></div></article><article class="card qr-result"><div id="qrcode" class="qr-box"><span>Le QR Code apparaîtra ici</span></div><p id="qrCaption"></p></article></div>
+        </section>
+
+        <section class="admin-panel" id="panel-history">
+          <article class="card"><div class="card-heading toolbar-heading"><div><span class="eyebrow">JOURNAL</span><h2>Historique des imports</h2></div><button id="clearHistoryBtn" class="btn btn-soft" type="button">Effacer l’historique</button></div><div id="historyList" class="history-list"></div></article>
+        </section>
+      </main>
     </div>
-    <form id="articleForm" class="article-form">
-      <input id="code" placeholder="Code" required>
-      <input id="designation" placeholder="Désignation" required>
-      <input id="prix" type="number" min="0" step="0.01" placeholder="Prix" required>
-      <button class="primary" type="submit">Ajouter / mettre à jour</button>
-    </form>
-    <input id="tableSearch" class="table-search" type="search" placeholder="Rechercher dans les articles…">
-    <div class="table-wrap">
-      <table><thead><tr><th>Code</th><th>Désignation</th><th>Prix</th><th></th></tr></thead><tbody id="articleRows"></tbody></table>
-    </div>
-  </section>
-
-  <section id="panel-import" class="panel">
-    <h2>Importer un fichier Excel</h2>
-    <p class="muted">Colonnes acceptées : code-barres, désignation et prix. Les noms proches sont détectés automatiquement.</p>
-    <label class="drop-zone" for="excelInput">
-      <strong>Choisir un fichier Excel ou CSV</strong>
-      <span>.xlsx, .xls ou .csv</span>
-      <input id="excelInput" type="file" accept=".xlsx,.xls,.csv,text/csv" hidden>
-    </label>
-    <div id="importMessage" class="notice" hidden></div>
-    <div id="previewBox" hidden>
-      <div class="section-head"><div><h3>Aperçu avant validation</h3><p id="previewStats" class="muted"></p></div><button id="confirmImportBtn" class="primary">Valider l’import</button></div>
-      <div class="table-wrap"><table><thead><tr><th>État</th><th>Code</th><th>Désignation</th><th>Prix</th></tr></thead><tbody id="previewRows"></tbody></table></div>
-    </div>
-  </section>
-
-  <section id="panel-store" class="panel">
-    <h2>Informations du magasin</h2>
-    <form id="storeForm" class="settings-form">
-      <label>Nom du magasin<input id="settingName" required></label>
-      <label>Adresse<input id="settingAddress"></label>
-      <label>Téléphone<input id="settingPhone" inputmode="tel"></label>
-      <label>Lien Google Maps<input id="settingMaps" type="url" placeholder="https://maps.google.com/…"></label>
-      <label>Texte d’accueil<textarea id="settingWelcome" rows="3"></textarea></label>
-      <button class="primary" type="submit">Enregistrer les paramètres</button>
-    </form>
-  </section>
-
-  <section id="panel-qr" class="panel">
-    <h2>QR Code du magasin</h2>
-    <p class="muted">Sur Vercel, utilisez l’adresse HTTPS publique de la page client.</p>
-    <label>Adresse à encoder<input id="qrUrl" type="url"></label>
-    <button id="generateQrBtn" class="primary">Générer le QR Code</button>
-    <div class="qr-card"><div id="qrcode"></div><p id="qrCaption"></p></div>
-    <button id="downloadQrBtn" class="secondary" hidden>Télécharger le QR Code</button>
-  </section>
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="assets/admin.js"></script>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="assets/admin.js"></script>
 </body>
 </html>

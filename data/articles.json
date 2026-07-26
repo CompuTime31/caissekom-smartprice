@@ -1,7 +1,7 @@
 [
-  {"code":"6132546140095","designation":"POZZY","prix":150},
-  {"code":"8680596641690","designation":"CLAVIER VERS","prix":1200},
-  {"code":"3231","designation":"SOURIS HAVIT","prix":950},
-  {"code":"OF","designation":"REPARATION","prix":3000},
-  {"code":"102","designation":"BATTERIE","prix":4800}
+  {"code":"6132546140095","designation":"POZZY","prix":150,"updatedAt":null},
+  {"code":"8680596641690","designation":"CLAVIER VERS","prix":1200,"updatedAt":null},
+  {"code":"3231","designation":"SOURIS HAVIT","prix":950,"updatedAt":null},
+  {"code":"OF","designation":"REPARATION","prix":3000,"updatedAt":null},
+  {"code":"102","designation":"BATTERIE","prix":4800,"updatedAt":null}
 ]

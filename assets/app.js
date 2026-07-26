@@ -1,34 +1,33 @@
-const DATA_KEY='smartprice_articles_v02';
-const OLD_DATA_KEY='smartprice_articles_v01';
-const SETTINGS_KEY='smartprice_settings_v02';
-let articles=[]; let stream=null; let detector=null; let scanTimer=null;
-const result=document.querySelector('#result');
+const DATA_KEYS=['smartprice_articles_v03','smartprice_articles_v02','smartprice_articles_v01'];
+const SETTINGS_KEYS=['smartprice_settings_v03','smartprice_settings_v02'];
+const META_KEY='smartprice_meta_v03';
+let articles=[],stream=null,detector=null,scanTimer=null,currentFacing='environment',currentTrack=null,torchOn=false;
 const money=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:2});
+const $=s=>document.querySelector(s);
 
 async function loadArticles(){
-  const local=localStorage.getItem(DATA_KEY)||localStorage.getItem(OLD_DATA_KEY);
-  if(local){articles=JSON.parse(local);localStorage.setItem(DATA_KEY,JSON.stringify(articles));}
-  else{articles=await fetch('data/articles.json').then(r=>r.json());localStorage.setItem(DATA_KEY,JSON.stringify(articles));}
-  document.querySelector('#lastUpdate').textContent=`${articles.length} articles chargés`;
+  let raw=null; for(const key of DATA_KEYS){raw=localStorage.getItem(key);if(raw)break;}
+  try{articles=raw?JSON.parse(raw):await fetch('data/articles.json').then(r=>r.json());}catch{articles=[];}
+  localStorage.setItem(DATA_KEYS[0],JSON.stringify(articles));
+  const meta=JSON.parse(localStorage.getItem(META_KEY)||'{}');
+  $('#lastUpdate').textContent=meta.lastChange?`Mis à jour le ${new Date(meta.lastChange).toLocaleDateString('fr-FR')}`:`${articles.length} articles chargés`;
 }
-function loadSettings(){
-  const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');
-  const settings={name:'CompuTime Oran',address:'Oran, Algérie',phone:'',maps:'',welcome:'Vérificateur de prix en libre-service',...s};
-  storeName.textContent=settings.name;storeTitle.textContent=settings.name;storeAddress.textContent=settings.address||'';
-  storeContact.textContent=[settings.phone,settings.welcome].filter(Boolean).join(' · ');
-  if(settings.maps){mapsLink.href=settings.maps;mapsLink.hidden=false;}
-}
-function normalize(v){return String(v??'').trim().toUpperCase()}
-function showArticle(a){
-  result.className='result-card success-result';
-  result.innerHTML=`<div class="result-badge">Article trouvé</div><div class="product-code">CODE : ${escapeHtml(a.code)}</div><div class="product-name">${escapeHtml(a.designation)}</div><div class="product-price">${money.format(Number(a.prix))} <small>DA</small></div><button class="secondary new-scan" onclick="resetSearch()">Scanner un autre article</button>`;
-  suggestions.hidden=true;
-}
-function resetSearch(){query.value='';query.focus();result.className='result-card empty';result.innerHTML='<div class="result-icon">⌁</div><p>Le résultat apparaîtra ici.</p>';}
-function showNotFound(q){result.className='result-card error-result';result.innerHTML=`<div class="result-icon">!</div><p class="not-found">Article introuvable</p><small>Aucun article ne correspond à « ${escapeHtml(q)} ».</small>`;suggestions.hidden=true;}
-function search(q){q=normalize(q);if(!q)return;const exact=articles.find(a=>normalize(a.code)===q);if(exact){showArticle(exact);return}const matches=articles.filter(a=>normalize(a.designation).includes(q)||normalize(a.code).includes(q)).slice(0,12);if(matches.length===1){showArticle(matches[0]);return}if(!matches.length){showNotFound(q);return}suggestions.hidden=false;suggestionList.innerHTML='';matches.forEach(a=>{const d=document.createElement('button');d.type='button';d.className='suggestion';d.innerHTML=`<div><strong>${escapeHtml(a.designation)}</strong><small>${escapeHtml(a.code)}</small></div><span>${money.format(Number(a.prix))} DA</span>`;d.onclick=()=>showArticle(a);suggestionList.appendChild(d)});}
-function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-searchForm.addEventListener('submit',e=>{e.preventDefault();search(query.value)});scanBtn.addEventListener('click',startScan);stopBtn.addEventListener('click',stopScan);
-async function startScan(){const status=scanStatus;if(!navigator.mediaDevices?.getUserMedia){status.hidden=false;status.textContent='La caméra nécessite une page HTTPS. Utilisez l’adresse Vercel ou saisissez le code manuellement.';return}if(!('BarcodeDetector' in window)){status.hidden=false;status.textContent='Le scanner automatique n’est pas pris en charge par ce navigateur. Utilisez Chrome sur Android ou la saisie manuelle.';return}try{const formats=await BarcodeDetector.getSupportedFormats();detector=new BarcodeDetector({formats});stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});video.srcObject=stream;videoWrap.hidden=false;await video.play();stopBtn.hidden=false;status.hidden=false;status.textContent='Placez le code-barres dans le cadre.';scanTimer=setInterval(async()=>{try{const codes=await detector.detect(video);if(codes.length){const value=codes[0].rawValue;query.value=value;stopScan();search(value)}}catch{}},300)}catch(e){status.hidden=false;status.textContent='Impossible d’ouvrir la caméra. Vérifiez son autorisation dans le navigateur.';}}
-function stopScan(){if(scanTimer)clearInterval(scanTimer);scanTimer=null;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;videoWrap.hidden=true;stopBtn.hidden=true;}
+function getSettings(){let raw=null;for(const key of SETTINGS_KEYS){raw=localStorage.getItem(key);if(raw)break;}return{ name:'CompuTime Oran',address:'Oran, Algérie',phone:'',email:'',maps:'',hours:'',welcome:'Scannez le code-barres d’un article pour afficher immédiatement sa désignation et son prix.',primary:'#0b57d0',secondary:'#4f8cff',logo:'',...JSON.parse(raw||'{}')};}
+function loadSettings(){const s=getSettings();document.documentElement.style.setProperty('--primary',s.primary);document.documentElement.style.setProperty('--secondary',s.secondary);$('#storeName').textContent=s.name;$('#storeTitle').textContent=s.name;$('#storeAddress').textContent=s.address||'';$('#welcomeText').textContent=s.welcome;$('#storeContact').textContent=[s.phone,s.email].filter(Boolean).join(' · ')||'Vérificateur de prix en libre-service';$('#brandInitial').textContent=(s.name||'C')[0].toUpperCase();if(s.logo){$('#brandImage').src=s.logo;$('#brandImage').hidden=false;$('#brandInitial').hidden=true;}if(s.hours){$('#storeHours').textContent=s.hours;$('#storeHours').hidden=false;}if(s.phone){$('#phoneLink').href='tel:'+s.phone.replace(/\s/g,'');$('#phoneLink').hidden=false;}if(s.maps){$('#mapsLink').href=s.maps;$('#mapsLink').hidden=false;}}
+function norm(v){return String(v??'').trim().toUpperCase();}
+function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function formatDate(value){return value?new Date(value).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'}):'—';}
+function showArticle(a){$('#result').className='result-card result-success';$('#result').innerHTML=`<div class="result-top"><span class="found-pill">✓ Article trouvé</span><span class="updated-label">Mise à jour : ${formatDate(a.updatedAt)}</span></div><div class="product-visual"><div class="product-placeholder">▥</div></div><div class="product-info"><span class="product-code">CODE ${esc(a.code)}</span><h3>${esc(a.designation)}</h3><div class="product-price">${money.format(Number(a.prix)||0)} <small>DA</small></div><button class="btn btn-primary new-scan" type="button">Scanner un autre article</button></div>`;$('.new-scan').onclick=resetSearch;$('#suggestions').hidden=true;$('#result').scrollIntoView({behavior:'smooth',block:'center'});}
+function resetSearch(){$('#query').value='';$('#result').className='result-card result-empty';$('#result').innerHTML='<div class="empty-state-icon">⌁</div><h3>Prêt à vérifier un prix</h3><p>Scannez un code-barres ou utilisez la recherche.</p>';$('#query').focus();}
+function showNotFound(q){$('#result').className='result-card result-error';$('#result').innerHTML=`<div class="empty-state-icon">!</div><h3>Article introuvable</h3><p>Aucun article ne correspond à « ${esc(q)} ».</p><button class="btn btn-soft retry-search" type="button">Réessayer</button>`;$('.retry-search').onclick=resetSearch;$('#suggestions').hidden=true;}
+function findMatches(q){const n=norm(q);if(!n)return[];return articles.filter(a=>norm(a.code).includes(n)||norm(a.designation).includes(n)).slice(0,10);}
+function search(q){q=String(q||'').trim();if(!q)return;const exact=articles.find(a=>norm(a.code)===norm(q));if(exact)return showArticle(exact);const matches=findMatches(q);if(matches.length===1)return showArticle(matches[0]);if(!matches.length)return showNotFound(q);renderSuggestions(matches,true);}
+function renderSuggestions(matches,scroll=false){const box=$('#suggestions'),list=$('#suggestionList');if(!matches.length){box.hidden=true;return;}box.hidden=false;list.innerHTML='';matches.forEach(a=>{const b=document.createElement('button');b.type='button';b.className='suggestion-item';b.innerHTML=`<div><strong>${esc(a.designation)}</strong><small>${esc(a.code)}</small></div><span>${money.format(Number(a.prix)||0)} DA</span>`;b.onclick=()=>showArticle(a);list.appendChild(b);});if(scroll)box.scrollIntoView({behavior:'smooth',block:'nearest'});}
+$('#searchForm').addEventListener('submit',e=>{e.preventDefault();search($('#query').value);});
+$('#query').addEventListener('input',e=>{const q=e.target.value.trim();renderSuggestions(q.length>=2?findMatches(q):[]);});
+$('#focusSearchBtn').onclick=()=>{$('#searchSection').scrollIntoView({behavior:'smooth'});setTimeout(()=>$('#query').focus(),400);};
+$('#scanBtn').onclick=startScan;$('#stopBtn').onclick=stopScan;$('#closeScannerBtn').onclick=stopScan;$('#switchCameraBtn').onclick=async()=>{currentFacing=currentFacing==='environment'?'user':'environment';await stopScan(false);startScan();};$('#torchBtn').onclick=toggleTorch;
+async function startScan(){const status=$('#scanStatus');$('#scannerPanel').hidden=false;$('#scannerPanel').scrollIntoView({behavior:'smooth',block:'start'});status.textContent='Initialisation de la caméra…';if(!navigator.mediaDevices?.getUserMedia){status.textContent='La caméra exige une adresse HTTPS. Utilisez Vercel ou la recherche manuelle.';return;}if(!('BarcodeDetector' in window)){status.textContent='Scanner automatique non pris en charge sur ce navigateur. Utilisez Chrome Android ou la saisie manuelle.';return;}try{const supported=await BarcodeDetector.getSupportedFormats();const preferred=['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','codabar','qr_code'].filter(x=>supported.includes(x));detector=new BarcodeDetector({formats:preferred.length?preferred:supported});stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:currentFacing},width:{ideal:1920},height:{ideal:1080}}});currentTrack=stream.getVideoTracks()[0];$('#video').srcObject=stream;await $('#video').play();status.textContent='Placez le code-barres dans le cadre.';const caps=currentTrack.getCapabilities?.()||{};$('#torchBtn').hidden=!caps.torch;scanTimer=setInterval(async()=>{try{const codes=await detector.detect($('#video'));if(codes.length){const value=codes[0].rawValue;$('#query').value=value;navigator.vibrate?.(100);await stopScan();search(value);}}catch{}},220);}catch(e){status.textContent='Impossible d’ouvrir la caméra. Autorisez son accès dans le navigateur.';}}
+async function toggleTorch(){if(!currentTrack)return;try{torchOn=!torchOn;await currentTrack.applyConstraints({advanced:[{torch:torchOn}]});$('#torchBtn').textContent=torchOn?'⚡ Éteindre flash':'⚡ Flash';}catch{torchOn=false;}}
+async function stopScan(hide=true){if(scanTimer)clearInterval(scanTimer);scanTimer=null;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;currentTrack=null;torchOn=false;$('#torchBtn').hidden=true;$('#video').srcObject=null;if(hide)$('#scannerPanel').hidden=true;}
 loadSettings();loadArticles();if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

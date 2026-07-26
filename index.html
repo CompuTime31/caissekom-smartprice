@@ -4,67 +4,100 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b57d0">
+  <meta name="description" content="Vérificateur de prix mobile Caissekom SmartPrice">
   <title>Caissekom SmartPrice</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
-  <header class="topbar">
-    <div class="brand-mark" id="brandMark">C</div>
-    <div>
-      <h1>Caissekom SmartPrice</h1>
-      <p id="storeName">CompuTime Oran</p>
-    </div>
-    <a class="admin-link" href="admin.html">Admin</a>
-  </header>
-
-  <main class="container">
-    <section class="store-card">
-      <div>
-        <strong id="storeTitle">CompuTime Oran</strong>
-        <span id="storeAddress">Oran, Algérie</span>
-        <small id="storeContact">Vérificateur de prix en libre-service</small>
-      </div>
-      <a id="mapsLink" class="maps-link" href="#" target="_blank" rel="noopener" hidden>📍 Itinéraire</a>
-    </section>
-
-    <section class="scanner-card">
-      <h2>Vérifier le prix d’un article</h2>
-      <p class="muted">Scannez son code-barres avec la caméra ou saisissez son code.</p>
-      <button id="scanBtn" class="primary scan-button">📷 Scanner un article</button>
-      <div class="video-wrap" id="videoWrap" hidden>
-        <video id="video" playsinline muted></video>
-        <div class="scan-guide"></div>
-      </div>
-      <div id="scanStatus" class="status" hidden></div>
-      <button id="stopBtn" class="secondary" hidden>Arrêter la caméra</button>
-
-      <div class="separator"><span>ou</span></div>
-
-      <form id="searchForm" autocomplete="off">
-        <label for="query">Code-barres, code interne ou désignation</label>
-        <div class="search-row">
-          <input id="query" type="search" placeholder="Ex. 3231 ou SOURIS HAVIT" inputmode="search">
-          <button class="primary" type="submit">Rechercher</button>
+<body class="client-page">
+  <div class="app-shell">
+    <header class="client-header">
+      <div class="brand-area">
+        <div class="brand-logo" id="brandLogo"><span id="brandInitial">C</span><img id="brandImage" alt="Logo du magasin" hidden></div>
+        <div class="brand-copy">
+          <span class="product-label">Caissekom SmartPrice</span>
+          <h1 id="storeName">CompuTime Oran</h1>
         </div>
-      </form>
-    </section>
+      </div>
+      <a class="icon-link admin-link" href="admin.html" aria-label="Administration">⚙</a>
+    </header>
 
-    <section id="result" class="result-card empty" aria-live="polite">
-      <div class="result-icon">⌁</div>
-      <p>Le résultat apparaîtra ici.</p>
-    </section>
+    <main>
+      <section class="hero-card">
+        <div class="hero-content">
+          <span class="eyebrow">VÉRIFICATEUR DE PRIX</span>
+          <h2>Scannez. Vérifiez. Achetez.</h2>
+          <p id="welcomeText">Scannez le code-barres d’un article pour afficher immédiatement sa désignation et son prix.</p>
+          <div class="store-meta">
+            <span id="storeAddress">Oran, Algérie</span>
+            <span id="storeHours" hidden></span>
+          </div>
+          <div class="hero-actions">
+            <button id="scanBtn" class="btn btn-primary btn-large" type="button">📷 Scanner un article</button>
+            <button id="focusSearchBtn" class="btn btn-soft" type="button">⌨ Recherche manuelle</button>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="barcode-art"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <span>SCAN</span>
+        </div>
+      </section>
 
-    <section id="suggestions" class="suggestions" hidden>
-      <h2>Résultats correspondants</h2>
-      <div id="suggestionList"></div>
-    </section>
-  </main>
+      <section id="scannerPanel" class="scanner-panel" hidden>
+        <div class="section-heading compact">
+          <div><span class="eyebrow">CAMÉRA</span><h2>Placez le code dans le cadre</h2></div>
+          <button id="closeScannerBtn" class="icon-button" type="button" aria-label="Fermer">✕</button>
+        </div>
+        <div class="camera-stage">
+          <video id="video" playsinline muted></video>
+          <div class="scan-frame"><span></span></div>
+          <div class="camera-message" id="scanStatus">Initialisation de la caméra…</div>
+        </div>
+        <div class="camera-actions">
+          <button id="switchCameraBtn" class="btn btn-soft" type="button">⇄ Changer caméra</button>
+          <button id="torchBtn" class="btn btn-soft" type="button" hidden>⚡ Flash</button>
+          <button id="stopBtn" class="btn btn-danger-soft" type="button">Arrêter</button>
+        </div>
+      </section>
 
-  <footer>
-    <span>Prix affichés en dinars algériens</span>
-    <span id="lastUpdate"></span>
-  </footer>
+      <section class="search-card" id="searchSection">
+        <div class="section-heading">
+          <div><span class="eyebrow">RECHERCHE RAPIDE</span><h2>Trouver un article</h2></div>
+        </div>
+        <form id="searchForm" autocomplete="off">
+          <label class="sr-only" for="query">Code-barres, code interne ou désignation</label>
+          <div class="search-control">
+            <span class="search-icon">⌕</span>
+            <input id="query" type="search" placeholder="Code-barres, code interne ou désignation" inputmode="search">
+            <button class="btn btn-primary" type="submit">Rechercher</button>
+          </div>
+        </form>
+        <div id="suggestions" class="live-suggestions" hidden>
+          <div id="suggestionList"></div>
+        </div>
+      </section>
+
+      <section id="result" class="result-card result-empty" aria-live="polite">
+        <div class="empty-state-icon">⌁</div>
+        <h3>Prêt à vérifier un prix</h3>
+        <p>Scannez un code-barres ou utilisez la recherche.</p>
+      </section>
+
+      <section class="store-contact-card">
+        <div><span class="eyebrow">VOTRE MAGASIN</span><h2 id="storeTitle">CompuTime Oran</h2><p id="storeContact">Vérificateur de prix en libre-service</p></div>
+        <div class="contact-actions">
+          <a id="phoneLink" class="btn btn-soft" href="#" hidden>☎ Appeler</a>
+          <a id="mapsLink" class="btn btn-soft" href="#" target="_blank" rel="noopener" hidden>📍 Itinéraire</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Prix affichés en dinars algériens</span>
+      <span id="lastUpdate"></span>
+      <span class="version">v0.3</span>
+    </footer>
+  </div>
   <script src="assets/app.js"></script>
 </body>
 </html>
