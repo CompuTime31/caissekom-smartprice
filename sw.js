@@ -1,1 +1,13 @@
-const CACHE='smartprice-v10a2';const ASSETS=['./','./index.html','./admin.html','./login.html','./assets/style.css','./assets/app.js','./assets/admin.js','./assets/auth.js','./data/articles.json','./manifest.json'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>caches.match(e.request))));
+const CACHE='smartprice-v111-20260726';
+const ASSETS=['./','./index.html','./login.html','./manifest.json','./assets/style.css?v=1.1.1','./assets/app.js?v=1.1.1','./assets/auth.js?v=1.1.1','./data/articles.json'];
+self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));});
+self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const key of await caches.keys())if(key!==CACHE)await caches.delete(key);await self.clients.claim();})());});
+self.addEventListener('fetch',event=>{
+  if(event.request.method!=='GET')return;
+  const url=new URL(event.request.url);
+  if(url.pathname.endsWith('/admin.html')||url.pathname.includes('/assets/admin.js')||url.pathname.includes('/assets/storage.js')){
+    event.respondWith(fetch(event.request,{cache:'no-store'}));
+    return;
+  }
+  event.respondWith(fetch(event.request).catch(()=>caches.match(event.request)));
+});

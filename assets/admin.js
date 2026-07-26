@@ -64,3 +64,15 @@ $('#cloudDisconnectBtn').onclick=()=>{const c=SmartPriceCloud.config();c.enabled
 $('#cloudPushBtn').onclick=async()=>{const c=SmartPriceCloud.config();try{await SmartPriceCloud.test(c);const count=await SmartPriceCloud.pushArticles(articles,c);await SmartPriceCloud.pushSettings(getSettings(),c);localStorage.setItem(CLOUD_SYNC_META,JSON.stringify({date:new Date().toISOString(),type:'push',count}));cloudNotice(`${count} articles et les paramètres ont été envoyés.`);loadCloudPanel();}catch(err){cloudNotice(err.message,true);}};
 $('#cloudPullBtn').onclick=async()=>{const c=SmartPriceCloud.config();try{await SmartPriceCloud.test(c);const remote=await SmartPriceCloud.pullArticles(c),settings=await SmartPriceCloud.pullSettings(c);if(remote.length){articles=remote;save();render();}if(settings){localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));loadSettings();}localStorage.setItem(CLOUD_SYNC_META,JSON.stringify({date:new Date().toISOString(),type:'pull',count:remote.length}));cloudNotice(`${remote.length} articles récupérés du cloud.`);loadCloudPanel();}catch(err){cloudNotice(err.message,true);}};
 loadCloudPanel();
+
+// v1.1.1 — purge des anciens fichiers PWA et diagnostic visible
+const clearAppCacheBtn=document.querySelector('#clearAppCacheBtn');
+if(clearAppCacheBtn)clearAppCacheBtn.onclick=async()=>{
+  try{
+    if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();for(const reg of regs)await reg.unregister();}
+    if('caches' in window){for(const key of await caches.keys())await caches.delete(key);}
+    cloudNotice('Cache vidé. La page va se recharger avec SmartPrice v1.1.1.');
+    setTimeout(()=>location.reload(true),700);
+  }catch(error){cloudNotice('Impossible de vider le cache : '+error.message,true);}
+};
+console.info('Caissekom SmartPrice admin v1.1.1 chargé');

@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b57d0">
   <title>Administration — Caissekom SmartPrice</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/style.css?v=1.1.1">
 </head>
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.1</small></div></div>
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.1.1</small></div></div>
       <nav>
         <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
         <button class="nav-tab" data-tab="articles">▤ Articles</button>
@@ -106,7 +106,7 @@
                 <label>Project URL<input id="cloudUrl" type="url" placeholder="https://xxxxx.supabase.co (sans /rest/v1)"></label>
                 <label>Clé publique Supabase<input id="cloudKey" type="password" placeholder="sb_publishable_... ou eyJ..."></label>
                 <label class="check-line"><input id="cloudEnabled" type="checkbox"> Activer la base centrale sur cet appareil</label>
-                <div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer et tester</button><button class="btn btn-soft" id="cloudDisconnectBtn" type="button">Désactiver</button></div>
+                <div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer et tester</button><button class="btn btn-soft" id="cloudDisconnectBtn" type="button">Désactiver</button><button class="btn btn-soft" id="clearAppCacheBtn" type="button">Vider le cache application</button></div>
               </form>
               <div id="cloudMessage" class="notice" hidden></div>
             </article>
@@ -124,7 +124,7 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/storage.js"></script>
-  <script src="assets/admin.js"></script>
+  <script src="assets/storage.js?v=1.1.1"></script>
+  <script src="assets/admin.js?v=1.1.1"></script>
 </body>
 </html>
