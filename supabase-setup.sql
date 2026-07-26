@@ -1,4 +1,4 @@
--- Caissekom SmartPrice v1.0-alpha3 — Supabase
+-- Caissekom SmartPrice v1.0-alpha4 — Supabase
 create table if not exists public.smartprice_articles (
   code text primary key,
   designation text not null,

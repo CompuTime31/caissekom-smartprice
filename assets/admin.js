@@ -55,7 +55,7 @@ updateSecuritySummary();setInterval(updateSecuritySummary,60000);
 window.addEventListener('storage',e=>{if([KEY,SETTINGS_KEY,META_KEY,HISTORY_KEY].includes(e.key))location.reload();if(e.key===SESSION_KEY&&!e.newValue)logout()});
 
 
-// v1.0-alpha3 — base centrale optionnelle
+// v1.0-alpha4 — base centrale optionnelle
 const CLOUD_SYNC_META='smartprice_cloud_sync_meta_v1';
 function cloudNotice(text,error=false){const el=$('#cloudMessage');el.hidden=false;el.textContent=text;el.className='notice '+(error?'notice-error':'notice-ok');}
 function loadCloudPanel(){const c=SmartPriceCloud.config(),m=JSON.parse(localStorage.getItem(CLOUD_SYNC_META)||'{}');$('#cloudUrl').value=c.url||'';$('#cloudKey').value=c.key||'';$('#cloudEnabled').checked=!!c.enabled;$('#cloudMode').textContent=c.enabled?'Cloud + cache local':'Local';$('#cloudState').textContent=c.url&&c.key?'Configuré':'Non configuré';$('#cloudLastSync').textContent=m.date?new Date(m.date).toLocaleString('fr-FR'):'Jamais';}
