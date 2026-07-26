@@ -1,16 +1,18 @@
-CAISSEKOM SMARTPRICE v1.2
+CAISSEKOM SMARTPRICE v1.3
 
 Nouveautés :
-- Import Excel synchronisé directement avec Supabase
-- Mode mise à jour ou remplacement complet du catalogue central
-- Désactivation automatique des articles absents lors d’un remplacement
-- Comptage des ajouts, mises à jour et désactivations
-- Journal des imports dans Supabase
-- Téléchargement de catalogues de plus de 1000 articles
-- Scanner et cache local conservés
+- QR Code client connecté à Supabase
+- Aucun URL ni clé à saisir sur les téléphones clients
+- Configuration automatique lors du premier scan du QR
+- Suppression automatique des paramètres du lien après installation
+- Bouton pour créer et copier le lien client connecté
+- Scanner, import Excel et synchronisation v1.2 conservés
 
 Installation :
-1. Exécuter smartprice-v1.2-migration.sql dans Supabase.
-2. Copier tous les fichiers dans le dépôt GitHub local.
-3. Commit puis Push origin.
-4. Vider le cache application une fois après le déploiement.
+1. Copier tous les fichiers dans le dépôt GitHub local.
+2. Commit puis Push origin.
+3. Vider le cache application une fois après le déploiement.
+4. Dans Administration > QR Code, cliquer sur « Créer le lien connecté ».
+5. Générer et imprimer le QR Code.
+
+Important : la clé incluse est la clé publique Supabase. Les règles RLS doivent rester activées.

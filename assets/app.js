@@ -109,4 +109,12 @@ async function scanImageFile(event){
   finally{event.target.value='';}
 }
 
+const importedCloud=window.SmartPriceCloud?.importConfigFromLocation?.();
+if(importedCloud){
+  const info=document.createElement('div');
+  info.className='cloud-auto-banner';
+  info.textContent='✓ Ce téléphone est connecté automatiquement au catalogue central.';
+  document.body.prepend(info);
+  setTimeout(()=>info.remove(),4500);
+}
 loadSettings();loadArticles();if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

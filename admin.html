@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b57d0">
   <title>Administration — Caissekom SmartPrice</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.2">
+  <link rel="stylesheet" href="assets/style.css?v=1.3">
 </head>
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.2</small></div></div>
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.3</small></div></div>
       <nav>
         <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
         <button class="nav-tab" data-tab="articles">▤ Articles</button>
@@ -71,7 +71,7 @@
         </section>
 
         <section class="admin-panel" id="panel-qrcode">
-          <div class="qr-layout"><article class="card"><div class="card-heading"><div><span class="eyebrow">QR CODE MAGASIN</span><h2>Créer le point d’accès client</h2><p>Utilisez l’adresse HTTPS de votre site Vercel.</p></div></div><label>Adresse de l’espace client<input id="qrUrl" type="url"></label><div class="form-actions"><button id="generateQrBtn" class="btn btn-primary" type="button">Générer le QR Code</button><button id="downloadQrBtn" class="btn btn-soft" type="button" hidden>Télécharger PNG</button></div></article><article class="card qr-result"><div id="qrcode" class="qr-box"><span>Le QR Code apparaîtra ici</span></div><p id="qrCaption"></p></article></div>
+          <div class="qr-layout"><article class="card"><div class="card-heading"><div><span class="eyebrow">QR CODE MAGASIN</span><h2>Créer le point d’accès client connecté</h2><p>Le QR peut inclure automatiquement la configuration publique Supabase. Le client n’aura rien à saisir sur son téléphone.</p></div></div><label>Adresse de l’espace client<input id="qrUrl" type="url"></label><div class="form-actions"><button id="connectedQrBtn" class="btn btn-primary" type="button">Créer le lien connecté</button><button id="generateQrBtn" class="btn btn-primary" type="button">Générer le QR Code</button><button id="copyClientLinkBtn" class="btn btn-soft" type="button">Copier le lien</button><button id="downloadQrBtn" class="btn btn-soft" type="button" hidden>Télécharger PNG</button></div><p class="muted">La clé publiée dans ce lien est la clé publique Supabase. Les écritures restent protégées par les règles RLS.</p></article><article class="card qr-result"><div id="qrcode" class="qr-box"><span>Le QR Code apparaîtra ici</span></div><p id="qrCaption"></p></article></div>
         </section>
 
         <section class="admin-panel" id="panel-history">
@@ -121,7 +121,7 @@
               <div class="card-heading"><div><span class="eyebrow">SYNCHRONISATION</span><h2>Transférer les données</h2><p>Envoyez le catalogue local vers le cloud ou récupérez la dernière version centrale.</p></div></div>
               <div class="backup-actions"><button class="btn btn-primary" id="cloudPushBtn" type="button">Mettre à jour le cloud</button><button class="btn btn-soft" id="cloudReplaceBtn" type="button">Remplacer le catalogue central</button><button class="btn btn-soft" id="cloudPullBtn" type="button">Récupérer du cloud</button></div>
               <div class="security-summary"><div><span>Mode actif</span><strong id="cloudMode">Local</strong></div><div><span>Dernière opération</span><strong id="cloudLastSync">Jamais</strong></div><div><span>État</span><strong id="cloudState">Non configuré</strong></div><div><span>Articles centraux</span><strong id="cloudCount">—</strong></div></div>
-              <p class="muted">Exécutez <code>smartprice-v1.2-migration.sql</code> dans Supabase avant le premier envoi. L’URL doit se terminer par <code>.supabase.co</code>, sans <code>/rest/v1</code>.</p>
+              <p class="muted">La migration v1.2 reste compatible ; aucune nouvelle table n’est requise pour la v1.3 dans Supabase avant le premier envoi. L’URL doit se terminer par <code>.supabase.co</code>, sans <code>/rest/v1</code>.</p>
             </article>
           </div>
         </section>
@@ -131,7 +131,7 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/storage.js?v=1.2"></script>
-  <script src="assets/admin.js?v=1.2"></script>
+  <script src="assets/storage.js?v=1.3"></script>
+  <script src="assets/admin.js?v=1.3"></script>
 </body>
 </html>
