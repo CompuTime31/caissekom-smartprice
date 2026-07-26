@@ -10,7 +10,7 @@
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.0-alpha2</small></div></div>
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.0-alpha3</small></div></div>
       <nav>
         <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
         <button class="nav-tab" data-tab="articles">▤ Articles</button>
@@ -19,6 +19,7 @@
         <button class="nav-tab" data-tab="qrcode">▣ QR Code</button>
         <button class="nav-tab" data-tab="history">◷ Historique</button>
         <button class="nav-tab" data-tab="security">⌾ Sécurité</button>
+        <button class="nav-tab" data-tab="cloud">☁ Base centrale</button>
       </nav>
       <div class="sidebar-bottom"><a class="btn btn-soft sidebar-preview" href="index.html">↗ Voir l’espace client</a><button class="btn btn-danger-soft" id="logoutBtn" type="button">Déconnexion</button></div>
     </aside>
@@ -96,11 +97,33 @@
             </article>
           </div>
         </section>
+
+        <section class="admin-panel" id="panel-cloud">
+          <div class="panel-stack">
+            <article class="card">
+              <div class="card-heading"><div><span class="eyebrow">SUPABASE</span><h2>Base de données centrale</h2><p>Centralisez les articles et les paramètres afin que tous les téléphones affichent les mêmes données.</p></div></div>
+              <form id="cloudForm" class="form-grid">
+                <label>Project URL<input id="cloudUrl" type="url" placeholder="https://xxxxx.supabase.co"></label>
+                <label>Clé publique anon<input id="cloudKey" type="password" placeholder="eyJ..."></label>
+                <label class="check-line"><input id="cloudEnabled" type="checkbox"> Activer la base centrale sur cet appareil</label>
+                <div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer et tester</button><button class="btn btn-soft" id="cloudDisconnectBtn" type="button">Désactiver</button></div>
+              </form>
+              <div id="cloudMessage" class="notice" hidden></div>
+            </article>
+            <article class="card">
+              <div class="card-heading"><div><span class="eyebrow">SYNCHRONISATION</span><h2>Transférer les données</h2><p>Envoyez le catalogue local vers le cloud ou récupérez la dernière version centrale.</p></div></div>
+              <div class="backup-actions"><button class="btn btn-primary" id="cloudPushBtn" type="button">Envoyer vers le cloud</button><button class="btn btn-soft" id="cloudPullBtn" type="button">Récupérer du cloud</button></div>
+              <div class="security-summary"><div><span>Mode actif</span><strong id="cloudMode">Local</strong></div><div><span>Dernière opération</span><strong id="cloudLastSync">Jamais</strong></div><div><span>État</span><strong id="cloudState">Non configuré</strong></div></div>
+              <p class="muted">Le fichier <code>supabase-setup.sql</code> inclus dans cette version crée les tables nécessaires.</p>
+            </article>
+          </div>
+        </section>
       </main>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="assets/storage.js"></script>
   <script src="assets/admin.js"></script>
 </body>
 </html>

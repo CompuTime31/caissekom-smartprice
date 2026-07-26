@@ -6,6 +6,10 @@ const money=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:2});
 const $=s=>document.querySelector(s);
 
 async function loadArticles(){
+  const cloud=window.SmartPriceCloud?.config();
+  if(cloud?.enabled&&cloud.url&&cloud.key){
+    try{articles=await SmartPriceCloud.pullArticles(cloud);localStorage.setItem(DATA_KEYS[0],JSON.stringify(articles));$('#lastUpdate').textContent=`${articles.length} articles · données centrales`;return;}catch(err){console.warn('Cloud indisponible, cache local utilisé',err);}
+  }
   let raw=null; for(const key of DATA_KEYS){raw=localStorage.getItem(key);if(raw)break;}
   try{articles=raw?JSON.parse(raw):await fetch('data/articles.json').then(r=>r.json());}catch{articles=[];}
   localStorage.setItem(DATA_KEYS[0],JSON.stringify(articles));
@@ -13,7 +17,7 @@ async function loadArticles(){
   $('#lastUpdate').textContent=meta.lastChange?`Mis à jour le ${new Date(meta.lastChange).toLocaleDateString('fr-FR')}`:`${articles.length} articles chargés`;
 }
 function getSettings(){let raw=null;for(const key of SETTINGS_KEYS){raw=localStorage.getItem(key);if(raw)break;}return{name:'CompuTime Oran',address:'Oran, Algérie',phone:'',email:'',maps:'',hours:'',welcome:'Scannez le code-barres d’un article pour afficher immédiatement sa désignation et son prix.',primary:'#0b57d0',secondary:'#4f8cff',logo:'',...JSON.parse(raw||'{}')};}
-function loadSettings(){const s=getSettings();document.documentElement.style.setProperty('--primary',s.primary);document.documentElement.style.setProperty('--secondary',s.secondary);$('#storeName').textContent=s.name;$('#storeTitle').textContent=s.name;$('#storeAddress').textContent=s.address||'';$('#welcomeText').textContent=s.welcome;$('#storeContact').textContent=[s.phone,s.email].filter(Boolean).join(' · ')||'Vérificateur de prix en libre-service';$('#brandInitial').textContent=(s.name||'C')[0].toUpperCase();if(s.logo){$('#brandImage').src=s.logo;$('#brandImage').hidden=false;$('#brandInitial').hidden=true;}if(s.hours){$('#storeHours').textContent=s.hours;$('#storeHours').hidden=false;}if(s.phone){$('#phoneLink').href='tel:'+s.phone.replace(/\s/g,'');$('#phoneLink').hidden=false;}if(s.maps){$('#mapsLink').href=s.maps;$('#mapsLink').hidden=false;}}
+async function loadSettings(){let s=getSettings();const cloud=window.SmartPriceCloud?.config();if(cloud?.enabled&&cloud.url&&cloud.key){try{const remote=await SmartPriceCloud.pullSettings(cloud);if(remote){s={...s,...remote};localStorage.setItem(SETTINGS_KEYS[0],JSON.stringify(s));}}catch(err){console.warn('Paramètres cloud indisponibles',err);}}document.documentElement.style.setProperty('--primary',s.primary);document.documentElement.style.setProperty('--secondary',s.secondary);$('#storeName').textContent=s.name;$('#storeTitle').textContent=s.name;$('#storeAddress').textContent=s.address||'';$('#welcomeText').textContent=s.welcome;$('#storeContact').textContent=[s.phone,s.email].filter(Boolean).join(' · ')||'Vérificateur de prix en libre-service';$('#brandInitial').textContent=(s.name||'C')[0].toUpperCase();if(s.logo){$('#brandImage').src=s.logo;$('#brandImage').hidden=false;$('#brandInitial').hidden=true;}if(s.hours){$('#storeHours').textContent=s.hours;$('#storeHours').hidden=false;}if(s.phone){$('#phoneLink').href='tel:'+s.phone.replace(/\s/g,'');$('#phoneLink').hidden=false;}if(s.maps){$('#mapsLink').href=s.maps;$('#mapsLink').hidden=false;}}
 function norm(v){return String(v??'').trim().toUpperCase();}
 function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function formatDate(value){return value?new Date(value).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'}):'—';}
