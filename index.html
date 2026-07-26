@@ -49,13 +49,13 @@
           <button id="closeScannerBtn" class="icon-button" type="button" aria-label="Fermer">✕</button>
         </div>
         <div class="camera-stage">
-          <video id="video" playsinline muted></video>
+          <div id="reader" class="scanner-reader"></div>
           <div class="scan-frame"><span></span></div>
           <div class="camera-message" id="scanStatus">Initialisation de la caméra…</div>
         </div>
         <div class="camera-actions">
           <button id="switchCameraBtn" class="btn btn-soft" type="button">⇄ Changer caméra</button>
-          <button id="torchBtn" class="btn btn-soft" type="button" hidden>⚡ Flash</button>
+          <label class="btn btn-soft file-scan-label">🖼 Scanner une photo<input id="scanFileInput" type="file" accept="image/*" capture="environment" hidden></label>
           <button id="stopBtn" class="btn btn-danger-soft" type="button">Arrêter</button>
         </div>
       </section>
@@ -95,9 +95,10 @@
     <footer>
       <span>Prix affichés en dinars algériens</span>
       <span id="lastUpdate"></span>
-      <span class="version">v0.3</span>
+      <span class="version">v1.0-alpha1</span>
     </footer>
   </div>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>
