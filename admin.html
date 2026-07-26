@@ -10,7 +10,7 @@
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.0-alpha4</small></div></div>
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.1</small></div></div>
       <nav>
         <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
         <button class="nav-tab" data-tab="articles">▤ Articles</button>
@@ -104,7 +104,7 @@
               <div class="card-heading"><div><span class="eyebrow">SUPABASE</span><h2>Base de données centrale</h2><p>Centralisez les articles et les paramètres afin que tous les téléphones affichent les mêmes données.</p></div></div>
               <form id="cloudForm" class="form-grid">
                 <label>Project URL<input id="cloudUrl" type="url" placeholder="https://xxxxx.supabase.co (sans /rest/v1)"></label>
-                <label>Clé publique anon<input id="cloudKey" type="password" placeholder="eyJ..."></label>
+                <label>Clé publique Supabase<input id="cloudKey" type="password" placeholder="sb_publishable_... ou eyJ..."></label>
                 <label class="check-line"><input id="cloudEnabled" type="checkbox"> Activer la base centrale sur cet appareil</label>
                 <div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer et tester</button><button class="btn btn-soft" id="cloudDisconnectBtn" type="button">Désactiver</button></div>
               </form>
@@ -114,7 +114,7 @@
               <div class="card-heading"><div><span class="eyebrow">SYNCHRONISATION</span><h2>Transférer les données</h2><p>Envoyez le catalogue local vers le cloud ou récupérez la dernière version centrale.</p></div></div>
               <div class="backup-actions"><button class="btn btn-primary" id="cloudPushBtn" type="button">Envoyer vers le cloud</button><button class="btn btn-soft" id="cloudPullBtn" type="button">Récupérer du cloud</button></div>
               <div class="security-summary"><div><span>Mode actif</span><strong id="cloudMode">Local</strong></div><div><span>Dernière opération</span><strong id="cloudLastSync">Jamais</strong></div><div><span>État</span><strong id="cloudState">Non configuré</strong></div></div>
-              <p class="muted">Exécutez <code>supabase-alpha4-migration.sql</code> dans Supabase avant le premier envoi. L’URL doit se terminer par <code>.supabase.co</code>, sans <code>/rest/v1</code>.</p>
+              <p class="muted">Exécutez <code>smartprice-v1.1-migration.sql</code> dans Supabase avant le premier envoi. L’URL doit se terminer par <code>.supabase.co</code>, sans <code>/rest/v1</code>.</p>
             </article>
           </div>
         </section>
@@ -123,6 +123,7 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/storage.js"></script>
   <script src="assets/admin.js"></script>
 </body>

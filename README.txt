@@ -1,22 +1,25 @@
-CAISSEKOM SMARTPRICE v1.0-alpha4
+CAISSEKOM SMARTPRICE v1.1
+=========================
 
-Correctif Supabase :
-- correction de l'erreur 404 ;
-- suppression automatique de /rest/v1 dans l'URL saisie ;
-- connexion aux tables existantes products et stores ;
-- messages d'erreur détaillés ;
-- envoi/récupération des articles depuis Supabase ;
-- conservation du scanner et des fonctions précédentes.
+NOUVEAUTÉS
+- Connexion Supabase reconstruite avec le SDK officiel supabase-js v2.
+- Normalisation automatique de Project URL, même si /rest/v1 est collé.
+- Diagnostic précis des erreurs : table absente, RLS, clé invalide ou réseau.
+- Import Excel avec synchronisation automatique vers Supabase lorsque le cloud est activé.
+- Envoi par lots de 500 articles et mise à jour par code-barres.
+- Cache local conservé en cas d'indisponibilité Internet.
+- Scanner professionnel conservé.
 
-INSTALLATION
-1. Dans Supabase > SQL Editor, exécuter supabase-alpha4-migration.sql.
-2. Publier les fichiers sur GitHub/Vercel.
-3. Dans Administration > Base centrale :
+INSTALLATION SUPABASE
+1. Ouvrir Supabase > SQL Editor > New query.
+2. Copier tout le fichier smartprice-v1.1-migration.sql.
+3. Cliquer sur Run.
+4. Publier ensuite cette version sur GitHub/Vercel.
+5. Dans Administration > Base centrale, saisir :
    - Project URL : https://xxxxx.supabase.co
-   - Clé : Publishable key (sb_publishable_...)
-   - cocher l'activation puis Enregistrer et tester.
-4. Importer Excel puis cliquer sur Envoyer vers le cloud.
+   - Publishable key : sb_publishable_...
+6. Cocher l'activation puis cliquer sur Enregistrer et tester.
 
-ATTENTION
-Les policies d'écriture anon de ce lot sont temporaires pour les tests.
-Elles seront remplacées par une authentification Supabase avant la version 1.0 finale.
+IMPORTANT
+Les règles d'écriture anonymes sont temporaires pendant le développement.
+Elles seront remplacées par Supabase Auth avant la version finale.
