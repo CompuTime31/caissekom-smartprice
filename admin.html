@@ -10,7 +10,7 @@
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.0-alpha1</small></div></div>
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.0-alpha2</small></div></div>
       <nav>
         <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
         <button class="nav-tab" data-tab="articles">▤ Articles</button>
@@ -18,14 +18,15 @@
         <button class="nav-tab" data-tab="store">⌂ Magasin</button>
         <button class="nav-tab" data-tab="qrcode">▣ QR Code</button>
         <button class="nav-tab" data-tab="history">◷ Historique</button>
+        <button class="nav-tab" data-tab="security">⌾ Sécurité</button>
       </nav>
-      <a class="btn btn-soft sidebar-preview" href="index.html">↗ Voir l’espace client</a>
+      <div class="sidebar-bottom"><a class="btn btn-soft sidebar-preview" href="index.html">↗ Voir l’espace client</a><button class="btn btn-danger-soft" id="logoutBtn" type="button">Déconnexion</button></div>
     </aside>
 
     <div class="admin-main">
       <header class="admin-topbar">
         <div><span class="eyebrow">CAISSEKOM SMARTPRICE</span><h1 id="pageTitle">Tableau de bord</h1></div>
-        <div class="status-chip"><span></span> Données locales actives</div>
+        <div class="topbar-actions"><div class="status-chip"><span></span> Session sécurisée</div><button class="btn btn-soft" id="topLogoutBtn" type="button">Déconnexion</button></div>
       </header>
 
       <main class="admin-content">
@@ -67,6 +68,33 @@
 
         <section class="admin-panel" id="panel-history">
           <article class="card"><div class="card-heading toolbar-heading"><div><span class="eyebrow">JOURNAL</span><h2>Historique des imports</h2></div><button id="clearHistoryBtn" class="btn btn-soft" type="button">Effacer l’historique</button></div><div id="historyList" class="history-list"></div></article>
+        </section>
+
+        <section class="admin-panel" id="panel-security">
+          <div class="security-grid">
+            <article class="card">
+              <div class="card-heading"><div><span class="eyebrow">ACCÈS ADMINISTRATEUR</span><h2>Changer le mot de passe</h2><p>Cette protection concerne l’administration sur cet appareil. L’authentification cloud sera ajoutée avec la base centrale.</p></div></div>
+              <form id="passwordForm" class="form-grid">
+                <label>Mot de passe actuel<input id="currentPassword" type="password" required autocomplete="current-password"></label>
+                <label>Nouveau mot de passe<input id="newPassword" type="password" minlength="6" required autocomplete="new-password"></label>
+                <label>Confirmer le nouveau mot de passe<input id="confirmPassword" type="password" minlength="6" required autocomplete="new-password"></label>
+                <div class="form-actions"><button class="btn btn-primary" type="submit">Changer le mot de passe</button></div>
+              </form>
+              <div id="securityMessage" class="notice" hidden></div>
+            </article>
+            <article class="card">
+              <div class="card-heading"><div><span class="eyebrow">SAUVEGARDE</span><h2>Protéger vos données</h2><p>Créez une sauvegarde complète des articles, paramètres et historiques, puis restaurez-la sur le même navigateur ou un autre appareil.</p></div></div>
+              <div class="backup-actions">
+                <button class="btn btn-primary" id="backupBtn" type="button">Télécharger une sauvegarde</button>
+                <label class="btn btn-soft file-button">Restaurer une sauvegarde<input id="restoreInput" type="file" accept="application/json,.json" hidden></label>
+              </div>
+              <div class="security-summary">
+                <div><span>Session</span><strong id="sessionStatus">Active</strong></div>
+                <div><span>Expiration</span><strong id="sessionExpiry">—</strong></div>
+                <div><span>Dernière sauvegarde</span><strong id="lastBackup">Jamais</strong></div>
+              </div>
+            </article>
+          </div>
         </section>
       </main>
     </div>

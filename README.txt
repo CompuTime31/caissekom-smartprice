@@ -1,16 +1,14 @@
-CAISSEKOM SMARTPRICE v1.0-alpha1
-
-Première construction de la nouvelle base technique.
+CAISSEKOM SMARTPRICE — v1.0-alpha2
 
 Nouveautés :
-- Scanner remplacé par html5-qrcode.
-- Compatibilité caméra iPhone/Android améliorée.
-- Sélection automatique de la caméra arrière.
-- Changement de caméra.
-- Scan d'une photo comme solution de secours.
-- Messages de diagnostic détaillés.
-- Conservation des articles et paramètres v0.3.
+- Scanner professionnel conservé et validé.
+- Connexion administrateur avec création du mot de passe à la première utilisation.
+- Session administrateur de 8 heures et déconnexion.
+- Changement du mot de passe.
+- Sauvegarde complète JSON des articles, paramètres et historique.
+- Restauration d’une sauvegarde sur le même navigateur ou un autre appareil.
+- Synchronisation de l’affichage entre onglets du même navigateur.
 
-Déploiement : remplacer les fichiers du dépôt GitHub, Commit, puis Push origin.
+Important : les données et l’authentification restent locales au navigateur dans ce lot. La prochaine étape est la base de données centrale avec authentification cloud.
 
-Important : cette livraison corrige le cœur du scanner. La base de données centrale et l'authentification administrateur seront ajoutées dans les prochains lots de la v1.0.
+Déploiement : copiez tous les fichiers dans le dépôt GitHub, Commit, puis Push origin. Vercel publiera automatiquement la mise à jour.
