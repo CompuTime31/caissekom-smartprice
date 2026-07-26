@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b57d0">
   <title>Administration — Caissekom SmartPrice</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.1.1">
+  <link rel="stylesheet" href="assets/style.css?v=1.2">
 </head>
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.1.1</small></div></div>
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.2</small></div></div>
       <nav>
         <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
         <button class="nav-tab" data-tab="articles">▤ Articles</button>
@@ -52,7 +52,14 @@
         </section>
 
         <section class="admin-panel" id="panel-import">
-          <article class="card import-card"><div class="card-heading"><div><span class="eyebrow">IMPORTATION INTELLIGENTE</span><h2>Mettre à jour avec Excel</h2><p>Formats acceptés : .xlsx, .xls et .csv. Les codes sont conservés comme texte.</p></div></div><label class="drop-zone" for="excelInput"><span class="drop-icon">⇧</span><strong>Sélectionner votre fichier Excel</strong><small>Colonnes attendues : code-barres, désignation, prix</small><input id="excelInput" type="file" accept=".xlsx,.xls,.csv" hidden></label><div id="importMessage" class="notice" hidden></div></article>
+          <article class="card import-card"><div class="card-heading"><div><span class="eyebrow">IMPORTATION INTELLIGENTE</span><h2>Mettre à jour avec Excel</h2><p>Formats acceptés : .xlsx, .xls et .csv. Les codes sont conservés comme texte.</p></div></div><label class="drop-zone" for="excelInput"><span class="drop-icon">⇧</span><strong>Sélectionner votre fichier Excel</strong><small>Colonnes attendues : code-barres, désignation, prix</small><input id="excelInput" type="file" accept=".xlsx,.xls,.csv" hidden></label>
+          <div class="sync-mode-card">
+            <strong>Mode de mise à jour centrale</strong>
+            <label class="check-line"><input type="radio" name="importCloudMode" value="merge" checked> Ajouter les nouveaux articles et mettre à jour les articles existants</label>
+            <label class="check-line"><input type="radio" name="importCloudMode" value="replace"> Remplacer le catalogue central : les articles absents du fichier seront désactivés</label>
+            <small>Le mode « remplacer » est recommandé lorsque le fichier Excel contient tout votre catalogue.</small>
+          </div>
+          <div id="importMessage" class="notice" hidden></div></article>
           <article id="previewBox" class="card" hidden><div class="card-heading toolbar-heading"><div><span class="eyebrow">APERÇU AVANT VALIDATION</span><h2>Contrôle des lignes</h2><p id="previewStats"></p></div><button id="confirmImportBtn" class="btn btn-primary" type="button">Valider l’import</button></div><div class="table-wrap"><table><thead><tr><th>Statut</th><th>Code</th><th>Désignation</th><th>Prix</th></tr></thead><tbody id="previewRows"></tbody></table></div></article>
         </section>
 
@@ -112,9 +119,9 @@
             </article>
             <article class="card">
               <div class="card-heading"><div><span class="eyebrow">SYNCHRONISATION</span><h2>Transférer les données</h2><p>Envoyez le catalogue local vers le cloud ou récupérez la dernière version centrale.</p></div></div>
-              <div class="backup-actions"><button class="btn btn-primary" id="cloudPushBtn" type="button">Envoyer vers le cloud</button><button class="btn btn-soft" id="cloudPullBtn" type="button">Récupérer du cloud</button></div>
-              <div class="security-summary"><div><span>Mode actif</span><strong id="cloudMode">Local</strong></div><div><span>Dernière opération</span><strong id="cloudLastSync">Jamais</strong></div><div><span>État</span><strong id="cloudState">Non configuré</strong></div></div>
-              <p class="muted">Exécutez <code>smartprice-v1.1-migration.sql</code> dans Supabase avant le premier envoi. L’URL doit se terminer par <code>.supabase.co</code>, sans <code>/rest/v1</code>.</p>
+              <div class="backup-actions"><button class="btn btn-primary" id="cloudPushBtn" type="button">Mettre à jour le cloud</button><button class="btn btn-soft" id="cloudReplaceBtn" type="button">Remplacer le catalogue central</button><button class="btn btn-soft" id="cloudPullBtn" type="button">Récupérer du cloud</button></div>
+              <div class="security-summary"><div><span>Mode actif</span><strong id="cloudMode">Local</strong></div><div><span>Dernière opération</span><strong id="cloudLastSync">Jamais</strong></div><div><span>État</span><strong id="cloudState">Non configuré</strong></div><div><span>Articles centraux</span><strong id="cloudCount">—</strong></div></div>
+              <p class="muted">Exécutez <code>smartprice-v1.2-migration.sql</code> dans Supabase avant le premier envoi. L’URL doit se terminer par <code>.supabase.co</code>, sans <code>/rest/v1</code>.</p>
             </article>
           </div>
         </section>
@@ -124,7 +131,7 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/storage.js?v=1.1.1"></script>
-  <script src="assets/admin.js?v=1.1.1"></script>
+  <script src="assets/storage.js?v=1.2"></script>
+  <script src="assets/admin.js?v=1.2"></script>
 </body>
 </html>

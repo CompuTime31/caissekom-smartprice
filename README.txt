@@ -1,11 +1,16 @@
-CAISSEKOM SMARTPRICE v1.1.1
+CAISSEKOM SMARTPRICE v1.2
 
-Correctif principal :
-- suppression du cache des anciennes versions ;
-- fichiers admin et cloud toujours chargés depuis le réseau ;
-- test Supabase direct avec URL exacte et statut HTTP détaillé ;
-- bouton « Vider le cache application » dans Base centrale ;
-- migration SQL v1.1.1 incluse.
+Nouveautés :
+- Import Excel synchronisé directement avec Supabase
+- Mode mise à jour ou remplacement complet du catalogue central
+- Désactivation automatique des articles absents lors d’un remplacement
+- Comptage des ajouts, mises à jour et désactivations
+- Journal des imports dans Supabase
+- Téléchargement de catalogues de plus de 1000 articles
+- Scanner et cache local conservés
 
-Publication : copiez tous les fichiers dans le dépôt GitHub local, commit, puis Push origin.
-Après déploiement : ouvrez admin.html, Base centrale, cliquez d’abord sur « Vider le cache application », reconnectez-vous puis testez Supabase.
+Installation :
+1. Exécuter smartprice-v1.2-migration.sql dans Supabase.
+2. Copier tous les fichiers dans le dépôt GitHub local.
+3. Commit puis Push origin.
+4. Vider le cache application une fois après le déploiement.
