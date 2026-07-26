@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b57d0">
+  <title>Caissekom SmartPrice</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark" id="brandMark">C</div>
+    <div>
+      <h1>Caissekom SmartPrice</h1>
+      <p id="storeName">CompuTime Oran</p>
+    </div>
+    <a class="admin-link" href="admin.html">Admin</a>
+  </header>
+
+  <main class="container">
+    <section class="store-card">
+      <div>
+        <strong id="storeTitle">CompuTime Oran</strong>
+        <span id="storeAddress">Oran, Algérie</span>
+        <small id="storeContact">Vérificateur de prix en libre-service</small>
+      </div>
+      <a id="mapsLink" class="maps-link" href="#" target="_blank" rel="noopener" hidden>📍 Itinéraire</a>
+    </section>
+
+    <section class="scanner-card">
+      <h2>Vérifier le prix d’un article</h2>
+      <p class="muted">Scannez son code-barres avec la caméra ou saisissez son code.</p>
+      <button id="scanBtn" class="primary scan-button">📷 Scanner un article</button>
+      <div class="video-wrap" id="videoWrap" hidden>
+        <video id="video" playsinline muted></video>
+        <div class="scan-guide"></div>
+      </div>
+      <div id="scanStatus" class="status" hidden></div>
+      <button id="stopBtn" class="secondary" hidden>Arrêter la caméra</button>
+
+      <div class="separator"><span>ou</span></div>
+
+      <form id="searchForm" autocomplete="off">
+        <label for="query">Code-barres, code interne ou désignation</label>
+        <div class="search-row">
+          <input id="query" type="search" placeholder="Ex. 3231 ou SOURIS HAVIT" inputmode="search">
+          <button class="primary" type="submit">Rechercher</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="result" class="result-card empty" aria-live="polite">
+      <div class="result-icon">⌁</div>
+      <p>Le résultat apparaîtra ici.</p>
+    </section>
+
+    <section id="suggestions" class="suggestions" hidden>
+      <h2>Résultats correspondants</h2>
+      <div id="suggestionList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Prix affichés en dinars algériens</span>
+    <span id="lastUpdate"></span>
+  </footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

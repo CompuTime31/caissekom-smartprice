@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Administration — SmartPrice</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand-mark">C</div>
+  <div><h1>Administration</h1><p>Caissekom SmartPrice v0.2</p></div>
+  <a class="admin-link" href="index.html">Voir l’espace client</a>
+</header>
+
+<main class="container admin-container">
+  <section class="kpi-grid">
+    <article class="kpi"><span>Articles</span><strong id="articleCount">0</strong></article>
+    <article class="kpi"><span>Dernier import</span><strong id="lastImport">Jamais</strong></article>
+    <article class="kpi"><span>État</span><strong class="ok">Prêt</strong></article>
+  </section>
+
+  <nav class="tabs" aria-label="Administration">
+    <button class="tab active" data-tab="articles">Articles</button>
+    <button class="tab" data-tab="import">Importer Excel</button>
+    <button class="tab" data-tab="store">Magasin</button>
+    <button class="tab" data-tab="qr">QR Code</button>
+  </nav>
+
+  <section id="panel-articles" class="panel active">
+    <div class="section-head"><div><h2>Gestion des articles</h2><p class="muted">Cliquez sur une ligne pour modifier l’article.</p></div>
+      <div class="admin-actions"><button id="exportBtn" class="secondary">Exporter JSON</button><button id="resetBtn" class="danger-soft">Réinitialiser</button></div>
+    </div>
+    <form id="articleForm" class="article-form">
+      <input id="code" placeholder="Code" required>
+      <input id="designation" placeholder="Désignation" required>
+      <input id="prix" type="number" min="0" step="0.01" placeholder="Prix" required>
+      <button class="primary" type="submit">Ajouter / mettre à jour</button>
+    </form>
+    <input id="tableSearch" class="table-search" type="search" placeholder="Rechercher dans les articles…">
+    <div class="table-wrap">
+      <table><thead><tr><th>Code</th><th>Désignation</th><th>Prix</th><th></th></tr></thead><tbody id="articleRows"></tbody></table>
+    </div>
+  </section>
+
+  <section id="panel-import" class="panel">
+    <h2>Importer un fichier Excel</h2>
+    <p class="muted">Colonnes acceptées : code-barres, désignation et prix. Les noms proches sont détectés automatiquement.</p>
+    <label class="drop-zone" for="excelInput">
+      <strong>Choisir un fichier Excel ou CSV</strong>
+      <span>.xlsx, .xls ou .csv</span>
+      <input id="excelInput" type="file" accept=".xlsx,.xls,.csv,text/csv" hidden>
+    </label>
+    <div id="importMessage" class="notice" hidden></div>
+    <div id="previewBox" hidden>
+      <div class="section-head"><div><h3>Aperçu avant validation</h3><p id="previewStats" class="muted"></p></div><button id="confirmImportBtn" class="primary">Valider l’import</button></div>
+      <div class="table-wrap"><table><thead><tr><th>État</th><th>Code</th><th>Désignation</th><th>Prix</th></tr></thead><tbody id="previewRows"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="panel-store" class="panel">
+    <h2>Informations du magasin</h2>
+    <form id="storeForm" class="settings-form">
+      <label>Nom du magasin<input id="settingName" required></label>
+      <label>Adresse<input id="settingAddress"></label>
+      <label>Téléphone<input id="settingPhone" inputmode="tel"></label>
+      <label>Lien Google Maps<input id="settingMaps" type="url" placeholder="https://maps.google.com/…"></label>
+      <label>Texte d’accueil<textarea id="settingWelcome" rows="3"></textarea></label>
+      <button class="primary" type="submit">Enregistrer les paramètres</button>
+    </form>
+  </section>
+
+  <section id="panel-qr" class="panel">
+    <h2>QR Code du magasin</h2>
+    <p class="muted">Sur Vercel, utilisez l’adresse HTTPS publique de la page client.</p>
+    <label>Adresse à encoder<input id="qrUrl" type="url"></label>
+    <button id="generateQrBtn" class="primary">Générer le QR Code</button>
+    <div class="qr-card"><div id="qrcode"></div><p id="qrCaption"></p></div>
+    <button id="downloadQrBtn" class="secondary" hidden>Télécharger le QR Code</button>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>
