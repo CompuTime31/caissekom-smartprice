@@ -1,18 +1,25 @@
-CAISSEKOM SMARTPRICE v1.4 — MULTI-MAGASINS
+CAISSEKOM SMARTPRICE v1.5 — UTILISATEURS ET RÔLES
 
-Nouveautés :
-- création et sélection de plusieurs magasins ;
-- catalogue et prix séparés par magasin ;
-- QR Code lié automatiquement au magasin actif ;
-- import Excel et synchronisation Supabase pour le magasin sélectionné ;
-- compatibilité avec les données v1.3 (migration automatique vers le magasin principal).
+NOUVEAUTÉS
+- Compte Administrateur principal.
+- Comptes Responsable de magasin.
+- Comptes Employé en consultation uniquement.
+- Connexion par identifiant et mot de passe.
+- Désactivation/réactivation des comptes.
+- Session de 8 heures.
+- Journal d’audit local : connexions, articles, imports et paramètres.
+- Migration automatique de l’ancien compte administrateur v1.4.
+- Préparation SQL des tables app_users et audit_logs.
 
-INSTALLATION :
-1. Exécuter smartprice-v1.4-migration.sql dans Supabase SQL Editor.
-2. Remplacer les fichiers du projet GitHub par ceux de ce dossier.
-3. Commit puis Push origin.
-4. Après le déploiement Vercel, vider le cache de l’application.
-5. Dans Administration > Magasins, créer ou sélectionner un magasin.
+IMPORTANT
+Dans cette version, les comptes et le journal sont stockés sur l’appareil administrateur.
+Le catalogue et les magasins restent partagés par Supabase.
+La prochaine étape de sécurité sera la centralisation des comptes avec Supabase Auth.
 
-IMPORTANT :
-Cette version pose la base multi-magasins. L’authentification cloud et les rôles sécurisés seront renforcés dans la v1.5.
+INSTALLATION
+1. Exécuter smartprice-v1.5-migration.sql dans Supabase SQL Editor.
+2. Copier tous les fichiers dans le dépôt GitHub du projet.
+3. Commit : Version 1.5 - Utilisateurs rôles et audit
+4. Push origin et attendre Vercel.
+5. Vider le cache de l’application une fois.
+6. Se connecter avec l’ancien mot de passe ; l’identifiant migré est admin.
