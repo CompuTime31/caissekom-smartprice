@@ -1,4 +1,4 @@
-const CACHE='smartprice-v1.5';
+const CACHE='smartprice-v1.6';
 const ASSETS=['./','./index.html','./login.html','./manifest.json','./assets/style.css?v=1.5','./assets/app.js?v=1.5','./assets/auth.js?v=1.5','./assets/storage.js?v=1.5','./data/articles.json'];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const key of await caches.keys())if(key!==CACHE)await caches.delete(key);await self.clients.claim();})());});

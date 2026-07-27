@@ -1,0 +1,6 @@
+(()=>{
+const labels={available:'Disponible',out_of_stock:'Rupture de stock',temporary:'Temporairement indisponible',coming_soon:'Arrivage prochain'};
+function activePromo(a){if(a.promoPrice==null||Number.isNaN(Number(a.promoPrice)))return false;const n=Date.now(),s=a.promoStart?Date.parse(a.promoStart):0,e=a.promoEnd?Date.parse(a.promoEnd):Infinity;return n>=s&&n<=e}
+function decorate(){const result=document.querySelector('#result');if(!result||result.classList.contains('result-empty'))return;const raw=localStorage.getItem('smartprice_articles_v03');if(!raw)return;let rows=[];try{rows=JSON.parse(raw)}catch{return}const text=result.textContent.toUpperCase();const a=rows.find(x=>text.includes(String(x.code||'').toUpperCase())||text.includes(String(x.designation||'').toUpperCase()));if(!a)return;if(!result.querySelector('.v16-status')){const d=document.createElement('div');d.className='v16-status';d.style.marginTop='12px';d.innerHTML=`<strong>${labels[a.status]||labels.available}</strong>${activePromo(a)?`<span style="margin-left:10px">Promotion active : ${new Intl.NumberFormat('fr-FR',{maximumFractionDigits:2}).format(a.promoPrice)} DA</span>`:''}`;result.appendChild(d)}}
+new MutationObserver(decorate).observe(document.body,{subtree:true,childList:true});
+})();

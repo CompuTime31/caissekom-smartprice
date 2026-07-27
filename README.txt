@@ -1,25 +1,39 @@
-CAISSEKOM SMARTPRICE v1.5 — UTILISATEURS ET RÔLES
+CAISSEKOM SMARTPRICE v1.6
 
 NOUVEAUTÉS
-- Compte Administrateur principal.
-- Comptes Responsable de magasin.
-- Comptes Employé en consultation uniquement.
-- Connexion par identifiant et mot de passe.
-- Désactivation/réactivation des comptes.
-- Session de 8 heures.
-- Journal d’audit local : connexions, articles, imports et paramètres.
-- Migration automatique de l’ancien compte administrateur v1.4.
-- Préparation SQL des tables app_users et audit_logs.
-
-IMPORTANT
-Dans cette version, les comptes et le journal sont stockés sur l’appareil administrateur.
-Le catalogue et les magasins restent partagés par Supabase.
-La prochaine étape de sécurité sera la centralisation des comptes avec Supabase Auth.
+- Connecteur HTTPS pour Caissekom WinDev
+- Test de connexion et clé API
+- Synchronisation manuelle ou automatique
+- Mode ajout/mise à jour ou remplacement complet
+- Promotions avec dates de début et de fin
+- États de disponibilité
+- Tableau de bord et journal des synchronisations
+- Import Excel conservé comme solution de secours
+- Toutes les fonctions v1.5 conservées
 
 INSTALLATION
-1. Exécuter smartprice-v1.5-migration.sql dans Supabase SQL Editor.
-2. Copier tous les fichiers dans le dépôt GitHub du projet.
-3. Commit : Version 1.5 - Utilisateurs rôles et audit
+1. Exécuter smartprice-v1.6-migration.sql dans Supabase SQL Editor.
+2. Remplacer les fichiers du projet GitHub par ceux de ce dossier.
+3. Commit : Version 1.6 - Connecteur Caissekom et promotions
 4. Push origin et attendre Vercel.
-5. Vider le cache de l’application une fois.
-6. Se connecter avec l’ancien mot de passe ; l’identifiant migré est admin.
+5. Vider une fois le cache application depuis Administration > Base centrale.
+
+FORMAT API ATTENDU
+GET HTTPS vers l’URL configurée, avec les en-têtes :
+X-SmartPrice-Key: votre-cle
+Authorization: Bearer votre-cle
+
+Réponse JSON acceptée :
+{
+  "products": [
+    {
+      "barcode": "6132546140095",
+      "designation": "Produit",
+      "price": 150,
+      "promo_price": 120,
+      "promo_start": "2026-07-27T08:00:00Z",
+      "promo_end": "2026-07-31T22:00:00Z",
+      "status": "available"
+    }
+  ]
+}
