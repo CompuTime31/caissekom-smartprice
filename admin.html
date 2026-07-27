@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b57d0">
   <title>Administration — Caissekom SmartPrice</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.6">
+  <link rel="stylesheet" href="assets/style.css?v=1.7">
 </head>
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.6</small></div></div>
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.7</small></div></div>
       <nav>
         <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
         <button class="nav-tab" data-tab="articles">▤ Articles</button>
@@ -46,8 +46,8 @@
 
         <section class="admin-panel" id="panel-articles">
           <div class="two-column-layout">
-            <article class="card sticky-form"><div class="card-heading"><div><span class="eyebrow">FICHE ARTICLE</span><h2>Ajouter ou modifier</h2></div></div><form id="articleForm" class="form-grid"><label>Code-barres / code interne<input id="code" required autocomplete="off"></label><label>Désignation<input id="designation" required autocomplete="off"></label><label>Prix de vente (DA)<input id="prix" type="number" min="0" step="0.01" required></label><div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer</button><button class="btn btn-soft" id="clearArticleBtn" type="button">Nouveau</button></div></form></article>
-            <article class="card"><div class="card-heading toolbar-heading"><div><span class="eyebrow">CATALOGUE</span><h2>Liste des articles</h2></div><div class="toolbar"><input id="tableSearch" type="search" placeholder="Rechercher…"><button class="btn btn-soft" id="exportBtn" type="button">Exporter JSON</button></div></div><div class="table-wrap"><table><thead><tr><th>Code</th><th>Désignation</th><th>Prix</th><th></th></tr></thead><tbody id="articleRows"></tbody></table></div><div class="table-footer"><span id="tableCount">0 article</span><button class="text-danger" id="resetBtn" type="button">Réinitialiser les données de démonstration</button></div></article>
+            <article class="card sticky-form"><div class="card-heading"><div><span class="eyebrow">FICHE ARTICLE</span><h2>Ajouter ou modifier</h2></div></div><form id="articleForm" class="form-grid"><label>Code-barres / code interne<input id="code" required autocomplete="off"></label><label>Désignation<input id="designation" required autocomplete="off"></label><label>Prix de vente (DA)<input id="prix" type="number" min="0" step="0.01" required></label><div class="form-row"><label>Marque<input id="brand" autocomplete="off"></label><label>Catégorie<input id="category" autocomplete="off"></label></div><label>Référence fabricant<input id="manufacturerRef" autocomplete="off"></label><label>Description<textarea id="description" rows="3"></textarea></label><label>Caractéristiques techniques<textarea id="specifications" rows="3" placeholder="Une caractéristique par ligne"></textarea></label><div class="form-row"><label>Prix promotionnel (DA)<input id="promoPrice" type="number" min="0" step="0.01"></label><label>Début promotion<input id="promoStart" type="datetime-local"></label></div><label>Fin promotion<input id="promoEnd" type="datetime-local"></label><div class="check-grid"><label class="check-line"><input id="featured" type="checkbox"> Produit vedette</label><label class="check-line"><input id="isNew" type="checkbox"> Nouveau produit</label></div><label>Photos (jusqu’à 5)<input id="productImages" type="file" accept="image/png,image/jpeg,image/webp" multiple><small>Les images sont compressées et enregistrées dans le catalogue. Maximum 5.</small></label><div id="productImagePreview" class="product-image-preview"></div><input id="imagesJson" type="hidden"><label>Codes des produits associés<input id="relatedCodes" placeholder="Ex. 613..., 868..."><small>Séparez les codes par une virgule.</small></label><div class="form-actions"><button class="btn btn-primary" type="submit">Enregistrer</button><button class="btn btn-soft" id="clearArticleBtn" type="button">Nouveau</button></div></form></article>
+            <article class="card"><div class="card-heading toolbar-heading"><div><span class="eyebrow">CATALOGUE</span><h2>Liste des articles</h2></div><div class="toolbar"><input id="tableSearch" type="search" placeholder="Rechercher…"><button class="btn btn-soft" id="exportBtn" type="button">Exporter JSON</button></div></div><div class="table-wrap"><table><thead><tr><th>Code</th><th>Désignation</th><th>Catalogue</th><th>Prix</th><th></th></tr></thead><tbody id="articleRows"></tbody></table></div><div class="table-footer"><span id="tableCount">0 article</span><button class="text-danger" id="resetBtn" type="button">Réinitialiser les données de démonstration</button></div></article>
           </div>
         </section>
 
@@ -60,7 +60,7 @@
             <small>Le mode « remplacer » est recommandé lorsque le fichier Excel contient tout votre catalogue.</small>
           </div>
           <div id="importMessage" class="notice" hidden></div></article>
-          <article id="previewBox" class="card" hidden><div class="card-heading toolbar-heading"><div><span class="eyebrow">APERÇU AVANT VALIDATION</span><h2>Contrôle des lignes</h2><p id="previewStats"></p></div><button id="confirmImportBtn" class="btn btn-primary" type="button">Valider l’import</button></div><div class="table-wrap"><table><thead><tr><th>Statut</th><th>Code</th><th>Désignation</th><th>Prix</th></tr></thead><tbody id="previewRows"></tbody></table></div></article>
+          <article id="previewBox" class="card" hidden><div class="card-heading toolbar-heading"><div><span class="eyebrow">APERÇU AVANT VALIDATION</span><h2>Contrôle des lignes</h2><p id="previewStats"></p></div><button id="confirmImportBtn" class="btn btn-primary" type="button">Valider l’import</button></div><div class="table-wrap"><table><thead><tr><th>Statut</th><th>Code</th><th>Désignation</th><th>Catalogue</th><th>Prix</th></tr></thead><tbody id="previewRows"></tbody></table></div></article>
         </section>
 
         <section class="admin-panel" id="panel-store">
@@ -131,10 +131,11 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/storage.js?v=1.6"></script>
-  <script src="assets/admin.js?v=1.6"></script>
-  <script src="assets/v14.js?v=1.6"></script>
-  <script src="assets/v15.js?v=1.6"></script>
-  <script src="assets/v16.js?v=1.6"></script>
+  <script src="assets/storage.js?v=1.7"></script>
+  <script src="assets/admin.js?v=1.7"></script>
+  <script src="assets/v14.js?v=1.7"></script>
+  <script src="assets/v15.js?v=1.7"></script>
+  <script src="assets/v16.js?v=1.7"></script>
+  <script src="assets/v17-admin.js?v=1.7"></script>
 </body>
 </html>
