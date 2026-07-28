@@ -9,7 +9,7 @@ window.SmartPriceCloud={
   config(){try{const saved=JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY)||'{}');return{enabled:false,url:'',key:'',...saved,url:this.normalizeUrl(saved.url)}}catch{return{enabled:false,url:'',key:''}}},
   saveConfig(c){const clean={enabled:!!c.enabled,url:this.normalizeUrl(c.url),key:String(c.key||'').trim()};localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(clean));this._client=null;this._signature='';return clean},
   validate(c){if(!c.url||!c.key)throw new Error('URL Supabase ou clé publique absente.');const url=this.normalizeUrl(c.url);if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url))throw new Error(`URL invalide : ${url}. Utilisez uniquement https://xxxxx.supabase.co`);if(!/^sb_publishable_/i.test(c.key)&&!/^eyJ/i.test(c.key))throw new Error('Clé publique invalide ou incomplète.');if(!window.supabase?.createClient)throw new Error('Le SDK Supabase n’est pas chargé. Vérifiez Internet et rechargez la page.')},
-  client(c=this.config()){c={...c,url:this.normalizeUrl(c.url)};this.validate(c);const sig=c.url+'|'+c.key;if(!this._client||this._signature!==sig){this._client=window.supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},global:{headers:{'X-Client-Info':'caissekom-smartprice/1.7'}}});this._signature=sig}return this._client},
+  client(c=this.config()){c={...c,url:this.normalizeUrl(c.url)};this.validate(c);const sig=c.url+'|'+c.key;if(!this._client||this._signature!==sig){this._client=window.supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},global:{headers:{'X-Client-Info':'caissekom-smartprice/1.8-beta1'}}});this._signature=sig}return this._client},
   explain(error,prefix='Erreur Supabase'){if(!error)return prefix;const code=error.code?` [${error.code}]`:'';let msg=error.message||String(error);if(error.code==='PGRST205'||/schema cache|Could not find the table/i.test(msg))msg='La table demandée n’est pas visible dans l’API. Exécutez la migration SQL v1.2.';else if(error.code==='42501'||/permission denied|row-level security/i.test(msg))msg='Accès refusé par les règles RLS. Exécutez la migration SQL v1.2.';else if(/Failed to fetch|NetworkError/i.test(msg))msg='Connexion réseau impossible. Vérifiez Internet, l’URL du projet et les bloqueurs de contenu.';else if(/Invalid API key|JWT/i.test(msg))msg='Clé publique invalide ou copiée incomplètement.';return`${prefix}${code} : ${msg}`},
   activeStoreId(){return localStorage.getItem(ACTIVE_STORE_KEY)||MAIN_STORE_ID},
   setActiveStoreId(id){localStorage.setItem(ACTIVE_STORE_KEY,String(id||MAIN_STORE_ID));return this.activeStoreId()},
@@ -37,3 +37,20 @@ window.SmartPriceCloud={
   importConfigFromLocation(){try{const hash=location.hash||'';const match=hash.match(/(?:^#|&)cloud=([^&]+)/);if(!match)return null;const raw=decodeURIComponent(match[1]);const payload=JSON.parse(decodeURIComponent(escape(atob(raw))));const saved=this.saveConfig({enabled:true,url:payload.url,key:payload.key});if(payload.storeId)this.setActiveStoreId(payload.storeId);history.replaceState(null,'',location.pathname+location.search);return saved}catch(err){console.warn('Configuration cloud QR invalide',err);return null}},
   setStatus(ok,message){localStorage.setItem(CLOUD_STATUS_KEY,JSON.stringify({ok,message,date:new Date().toISOString(),version:this.version}))}
 };
+
+// SmartPrice Studio Beta 2 — configuration par magasin
+Object.assign(window.SmartPriceCloud,{
+  async pullStudioSettings(c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId();
+    const{data,error}=await db.from('smartprice_settings').select('configuration,version,updated_at').eq('store_id',storeId).maybeSingle();
+    if(error)throw new Error(this.explain(error,'Configuration SmartPrice Studio indisponible. Exécutez la migration Beta 2.'));
+    return data||null;
+  },
+  async pushStudioSettings(configuration,c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId(),row={store_id:storeId,configuration,version:'1.8-beta2',updated_at:new Date().toISOString()};
+    const{data,error}=await db.from('smartprice_settings').upsert(row,{onConflict:'store_id'}).select().single();
+    if(error)throw new Error(this.explain(error,'Enregistrement SmartPrice Studio impossible. Exécutez la migration Beta 2.'));
+    return data;
+  }
+});
+window.SmartPriceCloud.version='1.8-beta2';

@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b57d0">
   <title>Administration — Caissekom SmartPrice</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.7">
+  <link rel="stylesheet" href="assets/style.css?v=1.8">
 </head>
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.7</small></div></div>
+      <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration v1.8 Studio Beta 1</small></div></div>
       <nav>
         <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
         <button class="nav-tab" data-tab="articles">▤ Articles</button>
@@ -18,6 +18,7 @@
         <button class="nav-tab" data-tab="store">⌂ Magasin</button>
         <button class="nav-tab" data-tab="qrcode">▣ QR Code</button>
         <button class="nav-tab" data-tab="history">◷ Historique</button>
+        <button class="nav-tab" data-tab="studio">◈ SmartPrice Studio</button>
         <button class="nav-tab" data-tab="security">⌾ Sécurité</button>
         <button class="nav-tab" data-tab="cloud">☁ Base centrale</button>
       </nav>
@@ -78,6 +79,89 @@
           <article class="card"><div class="card-heading toolbar-heading"><div><span class="eyebrow">JOURNAL</span><h2>Historique des imports</h2></div><button id="clearHistoryBtn" class="btn btn-soft" type="button">Effacer l’historique</button></div><div id="historyList" class="history-list"></div></article>
         </section>
 
+
+        <section class="admin-panel" id="panel-studio">
+          <div class="studio-header card">
+            <div><span class="eyebrow">CENTRE DE CONFIGURATION</span><h2>SmartPrice Studio</h2><p>Configurez l’affichage client, la protection des prix, l’apparence et les langues sans modifier le code.</p></div>
+            <div class="studio-score"><span>Configuration</span><strong id="studioScore">0%</strong><small id="studioScoreLabel">À compléter</small></div>
+          </div>
+          <form id="studioForm" class="studio-layout">
+            <div class="studio-tabs card">
+              <button type="button" class="studio-tab active" data-studio-tab="display">▦ Affichage</button>
+              <button type="button" class="studio-tab" data-studio-tab="protection">⌾ Protection des prix</button>
+              <button type="button" class="studio-tab" data-studio-tab="appearance">✦ Apparence</button>
+              <button type="button" class="studio-tab" data-studio-tab="languages">文 Langues</button>
+              <button type="button" class="studio-tab" data-studio-tab="access">↗ Accès hors magasin</button>
+            </div>
+            <div class="studio-content">
+              <article class="card studio-pane active" data-studio-pane="display">
+                <div class="card-heading"><div><span class="eyebrow">CATALOGUE CLIENT</span><h2>Mode d’affichage</h2></div></div>
+                <div class="display-modes">
+                  <label><input type="radio" name="displayMode" value="simple"><span><strong>Simple</strong><small>Désignation et prix</small></span></label>
+                  <label><input type="radio" name="displayMode" value="standard"><span><strong>Standard</strong><small>Photos, marque, promotions</small></span></label>
+                  <label><input type="radio" name="displayMode" value="complete"><span><strong>Complet</strong><small>Toutes les informations</small></span></label>
+                  <label><input type="radio" name="displayMode" value="custom"><span><strong>Personnalisé</strong><small>Choix manuel</small></span></label>
+                </div>
+                <div class="studio-option-grid">
+                  <label class="studio-switch"><input id="studioPhotos" type="checkbox"><span></span><div><strong>Photos</strong><small>Galerie produit</small></div></label>
+                  <label class="studio-switch"><input id="studioPromotions" type="checkbox"><span></span><div><strong>Promotions</strong><small>Prix promo et badge</small></div></label>
+                  <label class="studio-switch"><input id="studioNew" type="checkbox"><span></span><div><strong>Nouveautés</strong><small>Badge Nouveau</small></div></label>
+                  <label class="studio-switch"><input id="studioFeatured" type="checkbox"><span></span><div><strong>Produits vedettes</strong><small>Badge Vedette</small></div></label>
+                  <label class="studio-switch"><input id="studioRelated" type="checkbox"><span></span><div><strong>Produits associés</strong><small>Suggestions complémentaires</small></div></label>
+                  <label class="studio-switch"><input id="studioBrand" type="checkbox"><span></span><div><strong>Marque</strong><small>Afficher la marque</small></div></label>
+                  <label class="studio-switch"><input id="studioCategory" type="checkbox"><span></span><div><strong>Catégorie</strong><small>Afficher la catégorie</small></div></label>
+                  <label class="studio-switch"><input id="studioManufacturerRef" type="checkbox"><span></span><div><strong>Référence fabricant</strong><small>Référence commerciale</small></div></label>
+                  <label class="studio-switch"><input id="studioDescription" type="checkbox"><span></span><div><strong>Description</strong><small>Présentation détaillée</small></div></label>
+                  <label class="studio-switch"><input id="studioSpecifications" type="checkbox"><span></span><div><strong>Caractéristiques</strong><small>Fiche technique</small></div></label>
+                </div>
+              </article>
+              <article class="card studio-pane" data-studio-pane="protection">
+                <div class="card-heading"><div><span class="eyebrow">SÉCURITÉ CLIENT</span><h2>Protection des prix</h2><p>L’administrateur choisit les contrôles actifs. Les contrôles peuvent être combinés.</p></div></div>
+                <label>Niveau prédéfini<select id="studioSecurityMode"><option value="free">Accès libre</option><option value="qr">QR Code obligatoire</option><option value="qr_session">QR + session temporaire</option><option value="qr_gps">QR + géolocalisation</option><option value="qr_wifi">QR + Wi-Fi magasin</option><option value="full">Protection complète</option><option value="custom">Personnalisé</option></select></label>
+                <div class="studio-option-grid compact">
+                  <label class="studio-switch"><input id="studioRequireQr" type="checkbox"><span></span><div><strong>QR obligatoire</strong><small>Validation depuis le magasin</small></div></label>
+                  <label class="studio-switch"><input id="studioRequireSession" type="checkbox"><span></span><div><strong>Session temporaire</strong><small>Expiration automatique</small></div></label>
+                  <label class="studio-switch"><input id="studioRequireGps" type="checkbox"><span></span><div><strong>Géolocalisation</strong><small>Rayon autour du magasin</small></div></label>
+                  <label class="studio-switch"><input id="studioRequireWifi" type="checkbox"><span></span><div><strong>Wi-Fi magasin</strong><small>Nécessite le connecteur réseau</small></div></label>
+                  <label class="studio-switch"><input id="studioDynamicQr" type="checkbox"><span></span><div><strong>QR dynamique</strong><small>Jeton renouvelable</small></div></label>
+                  <label class="studio-switch"><input id="studioRevalidation" type="checkbox"><span></span><div><strong>Revalidation</strong><small>Recontrôle après expiration</small></div></label>
+                </div>
+                <div class="form-row"><label>Durée de session (minutes)<input id="studioSessionMinutes" type="number" min="1" max="1440"></label><label>Rayon GPS autorisé (mètres)<input id="studioGpsRadius" type="number" min="10" max="50000"></label></div>
+                <div class="form-row"><label>Latitude du magasin<input id="studioLatitude" type="number" step="any"></label><label>Longitude du magasin<input id="studioLongitude" type="number" step="any"></label></div>
+                <label>Période de renouvellement du QR (minutes)<input id="studioQrRenewal" type="number" min="1" max="10080"></label>
+              </article>
+              <article class="card studio-pane" data-studio-pane="appearance">
+                <div class="card-heading"><div><span class="eyebrow">IDENTITÉ VISUELLE</span><h2>Apparence client</h2></div></div>
+                <div class="form-row"><label>Couleur principale<input id="studioPrimary" type="color"></label><label>Couleur secondaire<input id="studioSecondary" type="color"></label></div>
+                <label>Thème<select id="studioTheme"><option value="light">Clair</option><option value="dark">Sombre</option><option value="system">Selon l’appareil</option></select></label>
+                <label>Style des cartes<select id="studioCardStyle"><option value="rounded">Arrondi</option><option value="compact">Compact</option><option value="flat">Plat</option></select></label>
+                <label>Bannière d’accueil (URL)<input id="studioBanner" type="url" placeholder="https://..."></label>
+                <label>Message hors magasin<textarea id="studioOutsideMessage" rows="3"></textarea></label>
+              </article>
+              <article class="card studio-pane" data-studio-pane="languages">
+                <div class="card-heading"><div><span class="eyebrow">LANGUES</span><h2>Langues disponibles</h2></div></div>
+                <div class="studio-option-grid compact">
+                  <label class="studio-switch"><input id="studioFr" type="checkbox"><span></span><div><strong>Français</strong><small>FR</small></div></label>
+                  <label class="studio-switch"><input id="studioAr" type="checkbox"><span></span><div><strong>العربية</strong><small>AR</small></div></label>
+                  <label class="studio-switch"><input id="studioEn" type="checkbox"><span></span><div><strong>English</strong><small>EN</small></div></label>
+                </div>
+                <label>Langue par défaut<select id="studioDefaultLanguage"><option value="fr">Français</option><option value="ar">العربية</option><option value="en">English</option></select></label>
+              </article>
+              <article class="card studio-pane" data-studio-pane="access">
+                <div class="card-heading"><div><span class="eyebrow">POLITIQUE HORS MAGASIN</span><h2>Ce que le client peut consulter</h2></div></div>
+                <div class="studio-option-grid compact">
+                  <label class="studio-switch"><input id="studioHidePricesOutside" type="checkbox"><span></span><div><strong>Masquer les prix</strong><small>Prix invisibles hors magasin</small></div></label>
+                  <label class="studio-switch"><input id="studioCatalogOutside" type="checkbox"><span></span><div><strong>Catalogue sans prix</strong><small>Produits visibles, prix masqués</small></div></label>
+                  <label class="studio-switch"><input id="studioSearchOutside" type="checkbox"><span></span><div><strong>Recherche hors magasin</strong><small>Autoriser la recherche</small></div></label>
+                  <label class="studio-switch"><input id="studioProductPagesOutside" type="checkbox"><span></span><div><strong>Fiches produit hors magasin</strong><small>Autoriser les détails</small></div></label>
+                </div>
+              </article>
+              <article class="card studio-pane" data-studio-pane="quality"><h3>Contrôle de cohérence</h3><p class="muted">SmartPrice vérifie automatiquement les paramètres incompatibles ou incomplets.</p><ul id="studioIssues" class="studio-issues"></ul></article>
+              <div class="studio-actions card"><div><strong id="studioSaveState">Modifications non enregistrées</strong><small>Les paramètres sont appliqués à l’espace client de cet appareil.</small></div><button class="btn btn-soft" id="studioResetBtn" type="button">Valeurs recommandées</button><button class="btn btn-soft" id="studioCloudPull" type="button">Charger du Cloud</button><button class="btn btn-soft" id="studioCloudPush" type="button">Enregistrer dans le Cloud</button><button class="btn btn-primary" type="submit">Enregistrer localement</button></div>
+            </div>
+          </form>
+        </section>
+
         <section class="admin-panel" id="panel-security">
           <div class="security-grid">
             <article class="card">
@@ -131,11 +215,12 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/storage.js?v=1.7"></script>
-  <script src="assets/admin.js?v=1.7"></script>
-  <script src="assets/v14.js?v=1.7"></script>
-  <script src="assets/v15.js?v=1.7"></script>
-  <script src="assets/v16.js?v=1.7"></script>
-  <script src="assets/v17-admin.js?v=1.7"></script>
+  <script src="assets/storage.js?v=1.8.2"></script>
+  <script src="assets/admin.js?v=1.8"></script>
+  <script src="assets/v14.js?v=1.8"></script>
+  <script src="assets/v15.js?v=1.8"></script>
+  <script src="assets/v16.js?v=1.8"></script>
+  <script src="assets/v17-admin.js?v=1.8"></script>
+  <script src="assets/studio.js?v=1.8.2"></script>
 </body>
 </html>
