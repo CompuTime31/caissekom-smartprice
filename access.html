@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b57d0">
+  <title>Accès magasin — SmartPrice</title>
+  <link rel="stylesheet" href="assets/style.css?v=1.9">
+</head>
+<body class="client-page access-page">
+  <main class="access-page-shell">
+    <section class="access-validation-card card">
+      <div class="access-gate-icon">⌾</div>
+      <span class="eyebrow">SMARTPRICE SÉCURISÉ</span>
+      <h1 id="accessTitle">Validation de votre accès</h1>
+      <p id="accessMessage">Vérification du QR Code du magasin…</p>
+      <div id="accessSpinner" class="access-spinner" aria-hidden="true"></div>
+      <div id="accessDetails" class="access-details" hidden></div>
+      <a id="accessRetry" class="btn btn-primary" href="index.html" hidden>Retour à SmartPrice</a>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/storage.js?v=1.9.2"></script>
+  <script src="assets/access.js?v=1.9.2"></script>
+</body>
+</html>

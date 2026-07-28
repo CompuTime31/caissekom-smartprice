@@ -54,3 +54,79 @@ Object.assign(window.SmartPriceCloud,{
   }
 });
 window.SmartPriceCloud.version='1.8-beta2';
+
+// SmartPrice v1.9 Beta 1 — QR dynamiques et sessions sécurisées
+Object.assign(window.SmartPriceCloud,{
+  async sha256(value){
+    const bytes=new TextEncoder().encode(String(value));
+    const hash=await crypto.subtle.digest('SHA-256',bytes);
+    return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  },
+  randomToken(){
+    const bytes=new Uint8Array(32);crypto.getRandomValues(bytes);
+    return [...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');
+  },
+  async createAccessToken(options={},c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId(),token=this.randomToken(),tokenHash=await this.sha256(token),now=Date.now();
+    const validity=Math.max(1,Number(options.validityMinutes)||60),row={store_id:storeId,token_hash:tokenHash,label:String(options.label||'').trim()||null,expires_at:new Date(now+validity*60000).toISOString(),max_uses:Math.max(1,Number(options.maxUses)||100),session_minutes:Math.max(1,Number(options.sessionMinutes)||120),active:true,created_at:new Date(now).toISOString()};
+    const{data,error}=await db.from('smartprice_access_tokens').insert(row).select('id,store_id,label,expires_at,max_uses,session_minutes,active,created_at').single();
+    if(error)throw new Error(this.explain(error,'Création du QR dynamique impossible. Exécutez la migration v1.9.'));
+    return{...data,token};
+  },
+  async listAccessTokens(c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId();
+    const{data,error}=await db.from('smartprice_access_tokens').select('id,store_id,label,expires_at,max_uses,use_count,session_minutes,active,created_at,last_used_at').eq('store_id',storeId).order('created_at',{ascending:false}).limit(100);
+    if(error)throw new Error(this.explain(error,'Liste des QR dynamiques indisponible. Exécutez la migration v1.9.'));
+    return data||[];
+  },
+  async revokeAccessToken(id,c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId();
+    const{error}=await db.from('smartprice_access_tokens').update({active:false}).eq('id',id).eq('store_id',storeId);
+    if(error)throw new Error(this.explain(error,'Désactivation du QR impossible.'));
+    return true;
+  },
+  async validateAccessToken(token,storeId,c=this.config()){
+    const db=this.client(c),hash=await this.sha256(token);
+    const{data,error}=await db.rpc('smartprice_validate_access_token',{p_token_hash:hash,p_store_id:storeId||null});
+    if(error)throw new Error(this.explain(error,'Validation du QR dynamique impossible. Exécutez la migration v1.9.'));
+    return Array.isArray(data)?data[0]:data;
+  }
+});
+window.SmartPriceCloud.version='1.9-beta1';
+
+// SmartPrice v1.9 Beta 2 — journal d'accès, statistiques et options avancées
+Object.assign(window.SmartPriceCloud,{
+  async createAccessTokenV2(options={},c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId(),token=this.randomToken(),tokenHash=await this.sha256(token),now=Date.now();
+    const validity=Math.max(1,Number(options.validityMinutes)||60);
+    const row={store_id:storeId,token_hash:tokenHash,label:String(options.label||'').trim()||null,point_of_sale:String(options.pointOfSale||'').trim()||null,expires_at:new Date(now+validity*60000).toISOString(),max_uses:Math.max(1,Number(options.maxUses)||100),session_minutes:Math.max(1,Number(options.sessionMinutes)||120),single_device:!!options.singleDevice,allow_reuse:options.allowReuse!==false,active:true,created_at:new Date(now).toISOString()};
+    const{data,error}=await db.from('smartprice_access_tokens').insert(row).select('id,store_id,label,point_of_sale,expires_at,max_uses,session_minutes,single_device,allow_reuse,active,created_at').single();
+    if(error)throw new Error(this.explain(error,'Création du QR dynamique impossible. Exécutez la migration v1.9 Beta 2.'));
+    return{...data,token};
+  },
+  async listAccessTokensV2(c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId();
+    const{data,error}=await db.from('smartprice_access_tokens').select('id,store_id,label,point_of_sale,expires_at,max_uses,use_count,session_minutes,single_device,allow_reuse,active,created_at,last_used_at').eq('store_id',storeId).order('created_at',{ascending:false}).limit(200);
+    if(error)throw new Error(this.explain(error,'Liste des QR indisponible. Exécutez la migration v1.9 Beta 2.'));
+    return data||[];
+  },
+  async listAccessLogs(limit=100,c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId();
+    const{data,error}=await db.from('smartprice_access_logs').select('id,token_id,store_id,created_at,result,reason,device_id,user_agent').eq('store_id',storeId).order('created_at',{ascending:false}).limit(Math.max(1,Math.min(500,Number(limit)||100)));
+    if(error)throw new Error(this.explain(error,'Journal des accès indisponible. Exécutez la migration v1.9 Beta 2.'));
+    return data||[];
+  },
+  async accessDashboard(c=this.config()){
+    const db=this.client(c),storeId=this.activeStoreId();
+    const{data,error}=await db.rpc('smartprice_access_dashboard',{p_store_id:storeId});
+    if(error)throw new Error(this.explain(error,'Statistiques QR indisponibles. Exécutez la migration v1.9 Beta 2.'));
+    return Array.isArray(data)?data[0]:data;
+  },
+  async validateAccessTokenV2(token,storeId,deviceId,c=this.config()){
+    const db=this.client(c),hash=await this.sha256(token);
+    const{data,error}=await db.rpc('smartprice_validate_access_token_v2',{p_token_hash:hash,p_store_id:storeId||null,p_device_id:deviceId||null,p_user_agent:navigator.userAgent||null});
+    if(error)throw new Error(this.explain(error,'Validation du QR impossible. Exécutez la migration v1.9 Beta 2.'));
+    return Array.isArray(data)?data[0]:data;
+  }
+});
+window.SmartPriceCloud.version='1.9-beta2';
