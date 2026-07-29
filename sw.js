@@ -1,4 +1,4 @@
-const CACHE='smartprice-v1.9-beta2';
+const CACHE='smartprice-enterprise-beta-complete';
 const ASSETS=['./','./index.html','./login.html','./access.html','./manifest.json','./assets/style.css?v=1.9','./assets/app.js?v=1.8','./assets/v17-client.js?v=1.8','./assets/studio-client.js?v=1.9','./assets/access.js?v=1.9','./assets/auth.js?v=1.7','./data/articles.json'];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const key of await caches.keys())if(key!==CACHE)await caches.delete(key);await self.clients.claim();})());});

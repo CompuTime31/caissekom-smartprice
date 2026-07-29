@@ -1,1 +1,17 @@
-{"name":"Caissekom SmartPrice","version":"2.0.0-beta.1","channel":"enterprise-beta"}
+{
+  "product": "Caissekom SmartPrice Enterprise",
+  "version": "2.0.0-beta-complete",
+  "channel": "beta",
+  "build": "clean-base-1",
+  "entrypoints": {
+    "client": "/",
+    "administration": "/admin",
+    "enterprise": "/enterprise",
+    "monitor": "/monitor",
+    "users": "/users",
+    "stores": "/stores",
+    "sync": "/sync",
+    "qr_access": "/access",
+    "catalog": "/catalog-enterprise"
+  }
+}

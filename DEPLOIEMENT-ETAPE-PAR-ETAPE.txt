@@ -1,0 +1,10 @@
+1. Télécharger et extraire le ZIP.
+2. Ouvrir le dossier caissekom-smartprice-enterprise-beta-complete.
+3. Dans GitHub, supprimer les anciens fichiers du dépôt.
+4. Importer le CONTENU du nouveau dossier à la racine.
+5. Vérifier que index.html, admin.html, enterprise.html et vercel.json sont visibles à la racine.
+6. Valider le commit sur main.
+7. Attendre le statut Ready / Production dans Vercel.
+8. Tester /enterprise puis /monitor.
+9. Faire Ctrl+F5 si l'ancien écran reste en cache.
+10. Exécuter supabase/SMARTPRICE-ENTERPRISE-INSTALL.sql dans Supabase.

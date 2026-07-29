@@ -1,2 +1,0 @@
--- Utilisez le fichier INSTALLATION-SUPABASE-COMPLETE.sql situé dans ce dossier.
--- Il contient la migration complète et réexécutable de la version Beta 2.1.

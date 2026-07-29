@@ -1,1 +1,0 @@
-Exécuter uniquement : INSTALLATION-SUPABASE-COMPLETE.sql
