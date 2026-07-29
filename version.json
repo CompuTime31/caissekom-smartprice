@@ -1,8 +1,8 @@
 {
   "product": "Caissekom SmartPrice Enterprise",
-  "version": "2.0.0-beta-complete",
+  "version": "2.1.0-dark-dashboard",
   "channel": "beta",
-  "build": "clean-base-1",
+  "build": "dark-enterprise-dashboard-1",
   "entrypoints": {
     "client": "/",
     "administration": "/admin",
@@ -13,5 +13,6 @@
     "sync": "/sync",
     "qr_access": "/access",
     "catalog": "/catalog-enterprise"
-  }
+  },
+  "design": "SmartPrice Enterprise Dark"
 }

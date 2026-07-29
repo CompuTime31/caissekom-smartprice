@@ -6,21 +6,34 @@
   <meta name="theme-color" content="#0b57d0">
   <title>Administration — Caissekom SmartPrice</title>
   <link rel="stylesheet" href="assets/style.css?v=1.9">
+  <link rel="stylesheet" href="assets/dark-enterprise.css?v=2.1">
 </head>
 <body class="admin-page">
   <div class="admin-layout">
     <aside class="sidebar">
       <div class="sidebar-brand"><div class="mini-logo">C</div><div><strong>SmartPrice</strong><small>Administration SmartPrice Enterprise</small></div></div>
       <nav>
-        <button class="nav-tab active" data-tab="dashboard">▦ Tableau de bord</button>
-        <button class="nav-tab" data-tab="articles">▤ Articles</button>
-        <button class="nav-tab" data-tab="import">⇧ Import Excel</button>
-        <button class="nav-tab" data-tab="store">⌂ Magasin</button>
-        <button class="nav-tab" data-tab="qrcode">▣ QR Code</button>
-        <button class="nav-tab" data-tab="history">◷ Historique</button>
-        <button class="nav-tab" data-tab="studio">◈ SmartPrice Studio</button>
-        <button class="nav-tab" data-tab="security">⌾ Sécurité</button>
-        <button class="nav-tab" data-tab="cloud">☁ Base centrale</button>
+        <div class="enterprise-section-title">Vue générale</div>
+        <button class="nav-tab active" data-tab="dashboard"><span class="nav-icon">⌂</span>Tableau de bord</button>
+        <a class="enterprise-link" href="/monitor"><span class="nav-icon">▥</span>Monitor</a>
+        <a class="enterprise-link" href="/stores"><span class="nav-icon">▧</span>Magasins</a>
+
+        <div class="nav-divider"></div>
+        <div class="enterprise-section-title">Gestion</div>
+        <button class="nav-tab" data-tab="articles"><span class="nav-icon">▤</span>Articles</button>
+        <a class="enterprise-link" href="/catalog-enterprise"><span class="nav-icon">◇</span>Catalogue Enterprise</a>
+        <button class="nav-tab" data-tab="import"><span class="nav-icon">⇧</span>Import Excel</button>
+        <a class="enterprise-link" href="/users"><span class="nav-icon">♙</span>Utilisateurs</a>
+        <button class="nav-tab" data-tab="store"><span class="nav-icon">▣</span>Configuration magasin</button>
+
+        <div class="nav-divider"></div>
+        <div class="enterprise-section-title">Système</div>
+        <a class="enterprise-link" href="/sync"><span class="nav-icon">↻</span>Synchronisation</a>
+        <button class="nav-tab" data-tab="qrcode"><span class="nav-icon">▦</span>QR & Accès</button>
+        <button class="nav-tab" data-tab="studio"><span class="nav-icon">◈</span>SmartPrice Studio</button>
+        <button class="nav-tab" data-tab="security"><span class="nav-icon">♢</span>Sécurité</button>
+        <button class="nav-tab" data-tab="history"><span class="nav-icon">◷</span>Historique</button>
+        <button class="nav-tab" data-tab="cloud"><span class="nav-icon">☁</span>Base centrale</button>
       </nav>
       <div class="sidebar-bottom"><a class="btn btn-soft sidebar-preview" href="index.html">↗ Voir l’espace client</a><button class="btn btn-danger-soft" id="logoutBtn" type="button">Déconnexion</button></div>
     </aside>
@@ -28,7 +41,8 @@
     <div class="admin-main">
       <header class="admin-topbar">
         <div><span class="eyebrow">CAISSEKOM SMARTPRICE</span><h1 id="pageTitle">Tableau de bord</h1></div>
-        <div class="topbar-actions"><div class="status-chip"><span></span> Session sécurisée</div><button class="btn btn-soft" id="topLogoutBtn" type="button">Déconnexion</button></div>
+        <div class="top-search">⌕ <input id="globalAdminSearch" type="search" placeholder="Rechercher une fonctionnalité…"></div>
+        <div class="topbar-actions"><div class="status-chip"><span></span> Système opérationnel</div><button class="btn btn-soft" id="topLogoutBtn" type="button">Admin</button></div>
       </header>
 
       <main class="admin-content">
@@ -39,6 +53,14 @@
             <article class="kpi-card"><span>Dernière mise à jour</span><strong id="lastChange">—</strong><small>modification locale</small></article>
             <article class="kpi-card"><span>Magasin</span><strong id="dashboardStore">CompuTime</strong><small>configuration active</small></article>
           </div>
+          <article class="card monitor-entry-card" style="margin-top:16px">
+            <div class="monitor-icon">▥</div>
+            <div class="monitor-copy">
+              <strong>SmartPrice Monitor</strong>
+              <p>Superviser les magasins, les synchronisations, les alertes et l’activité du réseau.</p>
+            </div>
+            <a class="btn btn-primary" href="/monitor">Ouvrir Monitor →</a>
+          </article>
           <div class="dashboard-grid">
             <article class="card"><div class="card-heading"><div><span class="eyebrow">ACCÈS RAPIDE</span><h2>Actions principales</h2></div></div><div class="quick-actions"><button class="quick-action" data-go="import">⇧<span><strong>Importer un Excel</strong><small>Mettre à jour les prix</small></span></button><button class="quick-action" data-go="articles">＋<span><strong>Ajouter un article</strong><small>Gestion manuelle</small></span></button><button class="quick-action" data-go="qrcode">▣<span><strong>Générer le QR</strong><small>Accès client</small></span></button><button class="quick-action" data-go="store">⌂<span><strong>Configurer le magasin</strong><small>Logo et coordonnées</small></span></button></div></article>
             <article class="card"><div class="card-heading"><div><span class="eyebrow">ÉTAT DU SYSTÈME</span><h2>Contrôle rapide</h2></div></div><div class="health-list"><div><span class="health-ok">✓</span><p><strong>Catalogue chargé</strong><small id="healthCatalog">0 article</small></p></div><div><span class="health-ok">✓</span><p><strong>Recherche client</strong><small>Disponible</small></p></div><div><span class="health-ok">✓</span><p><strong>Import Excel</strong><small>Prêt</small></p></div><div><span class="health-warning">!</span><p><strong>Stockage</strong><small>Local au navigateur — prototype</small></p></div></div></article>
@@ -224,5 +246,28 @@
   <script src="assets/studio.js?v=1.8.2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="assets/qr-admin.js?v=1.9.2"></script>
+
+<script>
+(function(){
+  const input=document.getElementById('globalAdminSearch');
+  if(!input) return;
+  const routes=[
+    {keys:'monitor supervision alertes magasins réseau',url:'/monitor'},
+    {keys:'magasins boutiques stores',url:'/stores'},
+    {keys:'utilisateurs rôles permissions',url:'/users'},
+    {keys:'synchronisation caissekom api connecteur',url:'/sync'},
+    {keys:'catalogue produits enterprise',url:'/catalog-enterprise'}
+  ];
+  input.addEventListener('keydown',function(e){
+    if(e.key!=='Enter') return;
+    const q=input.value.trim().toLowerCase();
+    const route=routes.find(r=>r.keys.includes(q)||q.split(/\s+/).some(k=>k.length>2&&r.keys.includes(k)));
+    if(route){ location.href=route.url; return; }
+    const local=[...document.querySelectorAll('.nav-tab')].find(b=>b.textContent.toLowerCase().includes(q));
+    if(local) local.click();
+  });
+})();
+</script>
+
 </body>
 </html>
