@@ -1,0 +1,33 @@
+{
+  "name": "caissekom-smartprice-enterprise",
+  "private": true,
+  "version": "3.0.0-rc.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "local": "node local-server/server.mjs",
+    "local:build": "npm run build && npm run local",
+    "check:local": "node --check local-server/server.mjs",
+    "check:build004": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs",
+    "check:build006": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs",
+    "check:build007": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs",
+    "check:build008": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "xlsx": "^0.18.5",
+    "qrcode.react": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.1"
+  }
+}

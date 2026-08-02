@@ -1,18 +1,7 @@
 {
   "product": "Caissekom SmartPrice Enterprise",
-  "version": "2.1.0-dark-dashboard",
-  "channel": "beta",
-  "build": "dark-enterprise-dashboard-1",
-  "entrypoints": {
-    "client": "/",
-    "administration": "/admin",
-    "enterprise": "/enterprise",
-    "monitor": "/monitor",
-    "users": "/users",
-    "stores": "/stores",
-    "sync": "/sync",
-    "qr_access": "/access",
-    "catalog": "/catalog-enterprise"
-  },
-  "design": "SmartPrice Enterprise Dark"
+  "version": "3.0 RC1",
+  "build": "008",
+  "channel": "release-candidate",
+  "date": "2026-08-01"
 }
