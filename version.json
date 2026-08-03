@@ -1,7 +1,18 @@
 {
   "product": "Caissekom SmartPrice Enterprise",
   "version": "3.0 RC1",
-  "build": "008",
+  "build": "010",
   "channel": "release-candidate",
-  "date": "2026-08-01"
+  "date": "2026-08-01",
+  "productionPort": 8080,
+  "developmentPort": 5173,
+  "productionArchitecture": "single-origin",
+  "architecture": "single-origin-production",
+  "features": [
+    "health-center",
+    "automatic-network-selection",
+    "dynamic-smartprice-qr-url",
+    "store-readiness-test",
+    "printable-health-report"
+  ]
 }

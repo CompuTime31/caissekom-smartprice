@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1785706270336,
+    "date": "2026-08-02T21:31:10.336Z",
+    "action": "SMARTPRICE_TEST",
+    "details": {
+      "score": 63,
+      "ok": false,
+      "accessUrl": "http://172.26.36.5:18083"
+    }
+  }
+]

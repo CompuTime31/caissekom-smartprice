@@ -1,7 +1,7 @@
 {
   "name": "caissekom-smartprice-enterprise",
   "private": true,
-  "version": "3.0.0-rc.1",
+  "version": "3.0.0-rc1-build010",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,9 @@
     "check:build004": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs",
     "check:build006": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs",
     "check:build007": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs",
-    "check:build008": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs"
+    "check:build008": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs",
+    "check:build009": "node --check local-server/server.mjs && node --check sync-agent/agent.mjs",
+    "start:production": "npm run build && npm run local"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

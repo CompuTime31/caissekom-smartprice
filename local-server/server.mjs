@@ -23,13 +23,63 @@ const readConfig=()=>readJson(configFile,{storeName:'Mon magasin',address:'',pho
 function audit(action,details={}){const items=readJson(auditFile,[]);items.unshift({id:Date.now(),date:new Date().toISOString(),action,details});writeJson(auditFile,items.slice(0,500));}
 function safeName(value='backup'){return String(value).replace(/[^a-z0-9_.-]/gi,'-').replace(/-+/g,'-').slice(0,80)||'backup'}
 function addresses(){const list=[];for(const [adapter,entries] of Object.entries(networkInterfaces()))for(const item of entries||[])if(item.family==='IPv4'&&!item.internal)list.push({adapter,name:item.address,url:`http://${item.address}:${port}`});return list;}
+
+function preferredAddress(){
+ const list=addresses();
+ if(!list.length)return null;
+ const privateAddress=list.find(x=>/^192\.168\./.test(x.name))
+   ||list.find(x=>/^10\./.test(x.name))
+   ||list.find(x=>/^172\.(1[6-9]|2\d|3[0-1])\./.test(x.name))
+   ||list[0];
+ return privateAddress;
+}
+function accessUrl(){
+ const selected=preferredAddress();
+ return selected?selected.url:`http://localhost:${port}`;
+}
+function healthReport(){
+ const products=readProducts();
+ const config=readConfig();
+ const nets=addresses();
+ const preferred=preferredAddress();
+ const distReady=existsSync(join(dist,'index.html'));
+ const backupFiles=readdirSync(backupDir).filter(x=>x.endsWith('.json'));
+ const checks=[
+  {id:'server',label:'Serveur local',ok:true,details:`Port ${port} actif`},
+  {id:'interface',label:'Interface SmartPrice',ok:distReady,details:distReady?'Interface compilée disponible':'Compilation React absente'},
+  {id:'network',label:'Réseau local',ok:nets.length>0,details:preferred?preferred.url:'Aucune adresse IPv4 locale détectée'},
+  {id:'catalog',label:'Catalogue',ok:Array.isArray(products),details:`${products.length} article(s)`},
+  {id:'configuration',label:'Configuration magasin',ok:Boolean(config.storeName&&config.setupComplete),details:config.setupComplete?config.storeName:'Assistant de mise en service à terminer'},
+  {id:'backup',label:'Sauvegardes',ok:existsSync(backupDir),details:`${backupFiles.length} sauvegarde(s)`},
+  {id:'sync',label:'Synchronisation',ok:existsSync(syncLogFile),details:existsSync(syncLogFile)?'Historique disponible':'Aucune synchronisation enregistrée'},
+  {id:'qr',label:'Adresse QR SmartPrice',ok:Boolean(preferred),details:preferred?preferred.url:'QR réseau indisponible'}
+ ];
+ const passed=checks.filter(x=>x.ok).length;
+ return {
+  ok:passed===checks.length,
+  score:Math.round((passed/checks.length)*100),
+  generatedAt:new Date().toISOString(),
+  preferredAddress:preferred,
+  accessUrl:accessUrl(),
+  addresses:nets,
+  checks,
+  summary:{
+   products:products.length,
+   port,
+   uptimeSeconds:Math.round(process.uptime()),
+   memoryMb:Math.round(process.memoryUsage().rss/1024/1024),
+   backups:backupFiles.length
+  }
+ };
+}
+
 function body(req){return new Promise((ok,fail)=>{let raw='';req.on('data',c=>{raw+=c;if(raw.length>5_000_000){fail(new Error('Corps trop volumineux'));req.destroy();}});req.on('end',()=>{try{ok(raw?JSON.parse(raw):{})}catch(e){fail(e)}});req.on('error',fail)});}
 function mapRows(rows=[]){const keys=Object.keys(rows[0]||{});const pick=(terms)=>keys.find(k=>terms.some(t=>k.toLowerCase().includes(t)))||'';const barcode=pick(['barcode','code barre','codebarre','ean','ref','code']);const designation=pick(['designation','désignation','libelle','libellé','produit','article']);const price=pick(['prix vente','prix','tarif','pv']);const stock=pick(['stock','qte','quantite','quantité']);const errors=[];const mapped=[];rows.forEach((r,i)=>{const code=String(r[barcode]||'').trim();const label=String(r[designation]||'').trim();const amount=Number(String(r[price]||'0').replace(',','.').replace(/[^0-9.-]/g,''));if(!code){errors.push({row:i+2,error:'Code-barres manquant'});return}if(!label){errors.push({row:i+2,error:'Désignation manquante'});return}mapped.push({id:Date.now()+i,barcode:code,designation:label,price:Number.isFinite(amount)?amount:0,stock:Number(String(r[stock]||'0').replace(/[^0-9.-]/g,''))||0,status:'Synchronisé',updatedAt:new Date().toISOString()});});return {mapped,errors,mapping:{barcode,designation,price,stock}};}
 
 function createAutomaticBackup(reason='automatic'){
  const stamp=new Date().toISOString().replace(/[:.]/g,'-');
  const name=`${stamp}-${safeName(readConfig().storeName)}-${reason}.json`;
- const snapshot={version:'3.0 RC1',build:'008',date:new Date().toISOString(),reason,config:readConfig(),products:readProducts(),syncHistory:readJson(syncLogFile,[]),auditHistory:readJson(auditFile,[])};
+ const snapshot={version:'3.0 RC1',build:'010',date:new Date().toISOString(),reason,config:readConfig(),products:readProducts(),syncHistory:readJson(syncLogFile,[]),auditHistory:readJson(auditFile,[])};
  writeJson(join(backupDir,name),snapshot);audit('BACKUP_CREATED',{name,products:snapshot.products.length,reason});
  return name;
 }
@@ -38,8 +88,10 @@ setInterval(()=>{try{createAutomaticBackup('daily')}catch(e){console.error('Sauv
 const server=http.createServer(async(req,res)=>{
  const url=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
  if(req.method==='OPTIONS'){res.writeHead(204,{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type','Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS'});return res.end();}
- if(url.pathname==='/api/health')return json(res,200,{ok:true,service:'SmartPrice Local',version:'3.0 RC1',build:'008',time:new Date().toISOString(),uptimeSeconds:Math.round(process.uptime())});
- if(url.pathname==='/api/network')return json(res,200,{host:'smartprice.local',port,addresses:addresses()});
+ if(url.pathname==='/api/health')return json(res,200,{ok:true,service:'SmartPrice Local',version:'3.0 RC1',build:'010',time:new Date().toISOString(),uptimeSeconds:Math.round(process.uptime())});
+ if(url.pathname==='/api/network')return json(res,200,{host:'smartprice.local',port,addresses:addresses(),preferred:preferredAddress(),accessUrl:accessUrl()});
+ if(url.pathname==='/api/health-report'&&req.method==='GET')return json(res,200,healthReport());
+ if(url.pathname==='/api/test-smartprice'&&req.method==='POST'){const report=healthReport();audit('SMARTPRICE_TEST',{score:report.score,ok:report.ok,accessUrl:report.accessUrl});return json(res,report.ok?200:207,report);}
  if(url.pathname==='/api/setup-status'&&req.method==='GET')return json(res,200,{configured:Boolean(readConfig().setupComplete),config:readConfig()});
  if(url.pathname==='/api/local-config'&&req.method==='GET')return json(res,200,readConfig());
  if(url.pathname==='/api/local-config'&&req.method==='POST'){try{const next=await body(req);writeJson(configFile,{...readConfig(),...next,port});audit('CONFIG_UPDATED',{storeName:next.storeName||readConfig().storeName});return json(res,200,{ok:true,config:readConfig()})}catch(e){return json(res,400,{ok:false,error:String(e)})}}
@@ -53,12 +105,12 @@ const server=http.createServer(async(req,res)=>{
  if(url.pathname==='/api/import'&&req.method==='POST'){try{const payload=await body(req);const {mapped,errors,mapping}=mapRows(payload.rows||[]);const current=readProducts();let created=0,updated=0;for(const item of mapped){const i=current.findIndex(p=>p.barcode===item.barcode);if(i>=0){current[i]={...current[i],...item,id:current[i].id};updated++}else{current.push(item);created++}}writeJson(productFile,current);const history=readJson(syncLogFile,[]);const entry={id:Date.now(),date:new Date().toISOString(),file:payload.fileName||'Import API',created,updated,rejected:errors.length,total:current.length,mapping};history.unshift(entry);writeJson(syncLogFile,history.slice(0,200));audit('IMPORT_COMPLETED',entry);return json(res,200,{ok:true,created,updated,rejected:errors.length,total:current.length,errors:errors.slice(0,100),mapping})}catch(e){return json(res,400,{ok:false,error:String(e)})}}
  if(url.pathname==='/api/sync-history'&&req.method==='GET')return json(res,200,{history:readJson(syncLogFile,[])});
  if(url.pathname==='/api/audit'&&req.method==='GET')return json(res,200,{history:readJson(auditFile,[])});
- if(url.pathname==='/api/diagnostics'&&req.method==='GET'){const products=readProducts();const config=readConfig();return json(res,200,{ok:true,checks:{dataDirectory:existsSync(dataDir),distDirectory:existsSync(dist),configuration:Boolean(config.storeName),networkAddresses:addresses().length,productDatabase:Array.isArray(products)},summary:{products:products.length,port,uptimeSeconds:Math.round(process.uptime()),memoryMb:Math.round(process.memoryUsage().rss/1024/1024)}});}
+ if(url.pathname==='/api/diagnostics'&&req.method==='GET')return json(res,200,healthReport());
  if(url.pathname==='/api/backups'&&req.method==='GET'){const backups=readdirSync(backupDir).filter(x=>x.endsWith('.json')).sort().reverse().map(name=>({name}));return json(res,200,{backups});}
- if(url.pathname==='/api/backups'&&req.method==='POST'){try{const payload=await body(req);const stamp=new Date().toISOString().replace(/[:.]/g,'-');const name=`${stamp}-${safeName(payload.name||readConfig().storeName)}.json`;const snapshot={version:'3.0 RC1',build:'008',date:new Date().toISOString(),config:readConfig(),products:readProducts(),syncHistory:readJson(syncLogFile,[]),auditHistory:readJson(auditFile,[])};writeJson(join(backupDir,name),snapshot);audit('BACKUP_CREATED',{name,products:snapshot.products.length});return json(res,201,{ok:true,name,products:snapshot.products.length})}catch(e){return json(res,400,{ok:false,error:String(e)})}}
+ if(url.pathname==='/api/backups'&&req.method==='POST'){try{const payload=await body(req);const stamp=new Date().toISOString().replace(/[:.]/g,'-');const name=`${stamp}-${safeName(payload.name||readConfig().storeName)}.json`;const snapshot={version:'3.0 RC1',build:'010',date:new Date().toISOString(),config:readConfig(),products:readProducts(),syncHistory:readJson(syncLogFile,[]),auditHistory:readJson(auditFile,[])};writeJson(join(backupDir,name),snapshot);audit('BACKUP_CREATED',{name,products:snapshot.products.length});return json(res,201,{ok:true,name,products:snapshot.products.length})}catch(e){return json(res,400,{ok:false,error:String(e)})}}
  if(url.pathname==='/api/backups/restore'&&req.method==='POST'){try{const payload=await body(req);const file=join(backupDir,safeName(payload.name));if(!existsSync(file))return json(res,404,{ok:false,error:'Sauvegarde introuvable'});const snapshot=readJson(file,null);if(!snapshot||!Array.isArray(snapshot.products))return json(res,422,{ok:false,error:'Sauvegarde invalide'});writeJson(productFile,snapshot.products);if(snapshot.config)writeJson(configFile,{...snapshot.config,port});audit('BACKUP_RESTORED',{name:payload.name,products:snapshot.products.length});return json(res,200,{ok:true,products:snapshot.products.length})}catch(e){return json(res,400,{ok:false,error:String(e)})}}
  if(url.pathname==='/api/stats'&&req.method==='GET'){const products=readProducts(),history=readJson(syncLogFile,[]);const today=new Date().toISOString().slice(0,10);const importedToday=history.filter(x=>String(x.date||'').slice(0,10)===today).reduce((n,x)=>n+(x.created||0)+(x.updated||0),0);return json(res,200,{products:products.length,stock:products.reduce((n,p)=>n+(Number(p.stock)||0),0),importedToday,lastSync:history[0]?.date||null,server:{port,addresses:addresses().length}});}
  if(!existsSync(dist))return json(res,503,{ok:false,error:'Le dossier dist est absent. Exécutez npm run build avant npm run local.'});
  let pathname=decodeURIComponent(url.pathname);if(pathname==='/'||!extname(pathname))pathname='/index.html';const file=normalize(join(dist,pathname));if(!file.startsWith(dist))return json(res,403,{error:'Accès refusé'});const target=existsSync(file)?file:join(dist,'index.html');res.writeHead(200,{'Content-Type':mime[extname(target)]||'application/octet-stream','Cache-Control':extname(target)==='.html'?'no-store':'public, max-age=3600'});createReadStream(target).pipe(res);
 });
-server.listen(port,'0.0.0.0',()=>{console.log(`SmartPrice Local Build 008 actif sur http://localhost:${port}`);for(const a of addresses())console.log(`Réseau magasin: ${a.url}`)});
+server.listen(port,'0.0.0.0',()=>{console.log(`SmartPrice Local Build 010 actif sur http://localhost:${port}`);for(const a of addresses())console.log(`Réseau magasin: ${a.url}`)});

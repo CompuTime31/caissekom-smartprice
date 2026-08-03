@@ -1,3 +1,23 @@
+# Build 010
+
+- Ajout du SmartPrice Health Center.
+- Nouveau bouton « Tester SmartPrice » depuis le tableau de bord.
+- Diagnostic automatique : serveur, interface, réseau, catalogue, configuration, sauvegardes, synchronisation et QR.
+- Score de santé global du magasin.
+- Détection automatique de l'adresse IPv4 locale préférée.
+- URL SmartPrice active fournie par l'API et utilisée pour le QR Code.
+- Rapport de diagnostic imprimable.
+- Nouvelles API : `GET /api/health-report` et `POST /api/test-smartprice`.
+- Passage général au Build 010.
+
+# Build 009
+
+- Interface React et API servies sur le même port 8080 en production.
+- Le port 5173 est désormais réservé au développement uniquement.
+- QR Code SmartPrice basé automatiquement sur l’adresse réseau détectée.
+- Ajout des scripts Windows de préparation et de démarrage production.
+- Mise à jour des libellés et métadonnées vers Build 009.
+
 # Build 008 — 2026-08-01
 
 - Import Excel natif `.xlsx` et `.xls` avec sélection de feuille.
